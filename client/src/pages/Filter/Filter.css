@@ -1,0 +1,95 @@
+/* Filter.css */
+
+/* Estilo base para o filtro */
+.filter {
+  margin: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+/* Título */
+.filter h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Estilo para os inputs e selects */
+.filter .form-group {
+  margin-bottom: 20px;
+}
+
+.filter label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.filter input,
+.filter select {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.filter input:focus,
+.filter select:focus {
+  border-color: #66afe9;
+  outline: none;
+}
+
+/* Classe específica para o botão Filtrar */
+.filter .filter-button {
+  display: block; /* Torna o botão como um bloco */
+  width: 50%; /* Define a largura do botão */
+  margin: 20px auto; /* Centraliza o botão */
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter .filter-button:hover {
+  background-color: #45a049;
+}
+
+.filter .filter-button:active {
+  background-color: #3e8e41;
+}
+
+/* Tabela de resultados */
+.filter table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.filter table th,
+.filter table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.filter table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.filter table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Mensagem de nenhum resultado */
+.filter table td[colspan='5'] {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+}
