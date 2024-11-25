@@ -1,6 +1,6 @@
 import express from 'express';  // Certifique-se de que express está importado corretamente
 import cors from 'cors';        // Importando o CORS
-import app from './src/App.js'; // Importando as rotas do arquivo app.js
+import app from '../back/App.js' // Importando as rotas do arquivo app.js
 
 // Criando a instância do servidor
 const server = express();
