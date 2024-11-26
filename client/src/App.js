@@ -5,6 +5,7 @@ import Footer from './comp/Footer/Footer';
 import Login from './pages/Login/Login';
 import Controle from './pages/Control/Control';
 import Filtro from './pages/Filter/Filter';
+import User from './pages/User/User'; // Importando a página User
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticação
@@ -31,6 +32,7 @@ function AppContent({ isAuthenticated, setIsAuthenticated }) {
         <Route path="/" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/filtro" element={<Filtro />} />
         <Route path="/controle" element={<Controle />} />
+        <Route path="/user" element={<User />} /> {/* Adicionando a rota para a página User */}
       </Routes>
 
       <Footer />

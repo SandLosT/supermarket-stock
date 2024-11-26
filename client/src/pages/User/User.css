@@ -1,0 +1,119 @@
+.user-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f4f4f4;
+  padding: 10px;
+}
+
+.sidebar-item {
+  display: block;
+  padding: 10px;
+  background: #007bff; /* Cor de fundo azul */
+  margin-bottom: 5px;
+  cursor: pointer;
+  color: white; /* Texto branco */
+  transition: background-color 0.3s ease; /* Transição suave de cor */
+}
+
+.sidebar-item:hover {
+  background: #0056b3; /* Cor mais escura para o efeito hover */
+}
+
+.sidebar-item.active {
+  background: #0056b3; /* Cor azul mais escura quando a aba estiver ativa */
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #fafafa;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center; /* Centraliza o formulário horizontalmente */
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%; /* Ajusta para ocupar 100% da largura do contêiner pai */
+  max-width: 500px; /* Limita a largura máxima para 500px */
+}
+
+button {
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Estilo específico para os botões na página de editar */
+.edit-buttons {
+  display: flex;
+  justify-content: center; /* Centraliza os botões horizontalmente */
+  gap: 20px; /* Espaçamento entre os botões */
+  margin-top: 20px;
+}
+
+.edit-button {
+  width: 150px; /* Largura menor */
+  padding: 10px;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+  color: white; /* Texto branco */
+  transition: background-color 0.3s ease;
+}
+
+.edit-button.edit {
+  background-color: #007bff; /* Azul para o botão de editar */
+}
+
+.edit-button.edit:hover {
+  background-color: #0056b3; /* Azul mais escuro no hover */
+}
+
+.edit-button.delete {
+  background-color: #ff4d4d; /* Vermelho para o botão de excluir */
+}
+
+.edit-button.delete:hover {
+  background-color: #cc0000; /* Vermelho mais escuro no hover */
+}
+
+/* Centraliza o botão de criar usuário */
+.create-button-container {
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  margin-top: 20px;
+}
+
+.create-button {
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.create-button:hover {
+  background-color: #45a049;
+}

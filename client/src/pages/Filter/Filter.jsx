@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Filter.css';
 
 function Filter({ products }) {
@@ -7,7 +7,7 @@ function Filter({ products }) {
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   // Função para aplicar o filtro
-  const handleFilter = () => {
+  const handleFilter = useCallback(() => {
     let filtered = Array.isArray(products) ? [...products] : []; // Garante que products é um array
 
     if (nameFilter) {
@@ -23,7 +23,7 @@ function Filter({ products }) {
     }
 
     setFilteredProducts(filtered);
-  };
+  }, [products, nameFilter, typeFilter]); // Adicionando dependências de produtos, nameFilter e typeFilter
 
   // Atualiza o filtro sempre que os produtos mudarem
   useEffect(() => {
@@ -35,7 +35,7 @@ function Filter({ products }) {
   // Atualiza o filtro de acordo com os campos de busca
   useEffect(() => {
     handleFilter();
-  }, [nameFilter, typeFilter]);
+  }, [handleFilter]); // Aqui estamos garantindo que handleFilter seja chamado sempre que for alterado.
 
   return (
     <div className="filter">
