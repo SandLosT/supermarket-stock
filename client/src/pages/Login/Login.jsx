@@ -36,39 +36,41 @@ function Login() {
     } finally {
         setLoading(false);
     }
-};
+  };
 
   return (
-    <div className="login">
-      <h2>Login</h2>
-      {error && <div className="error">{error}</div>} {/* Exibe mensagens de erro */}
-      <div className="form-group">
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Digite seu email"
-          />
-        </div>
+    <div className="login-page"> {/* Classe específica para aplicar os estilos apenas na página de login */}
+      <div className="login">
+        <h2>Login</h2>
+        {error && <div className="error">{error}</div>} {/* Exibe mensagens de erro */}
+        <div className="form-group">
+          <div>
+            <label>Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Digite seu email"
+            />
+          </div>
 
-        <div>
-          <label>Senha:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Digite sua senha"
-          />
-        </div>
+          <div>
+            <label>Senha:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Digite sua senha"
+            />
+          </div>
 
-        <button
-          onClick={handleLogin}
-          disabled={loading} // Desabilita o botão enquanto está carregando
-        >
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
+          <button
+            onClick={handleLogin}
+            disabled={loading} // Desabilita o botão enquanto está carregando
+          >
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+        </div>
       </div>
     </div>
   );

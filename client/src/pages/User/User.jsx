@@ -12,24 +12,26 @@ function User() {
   };
 
   return (
-    <div className="user-container">
-      <div className="sidebar">
-        <button
-          className={`sidebar-item ${activeTab === 'alterar' ? 'active' : ''}`}
-          onClick={() => handleTabClick('alterar')}
-        >
-          Alterar Usuário
-        </button>
-        <button
-          className={`sidebar-item ${activeTab === 'criar' ? 'active' : ''}`}
-          onClick={() => handleTabClick('criar')}
-        >
-          Criar Usuário
-        </button>
-      </div>
+    <div className="user-page"> {/* Classe específica para aplicar os estilos apenas na página de user */}
+      <div className="user-container">
+        <div className="sidebar">
+          <button
+            className={`sidebar-item ${activeTab === 'alterar' ? 'active' : ''}`}
+            onClick={() => handleTabClick('alterar')}
+          >
+            Alterar Usuário
+          </button>
+          <button
+            className={`sidebar-item ${activeTab === 'criar' ? 'active' : ''}`}
+            onClick={() => handleTabClick('criar')}
+          >
+            Criar Usuário
+          </button>
+        </div>
 
-      <div className="content">
-        {activeTab === 'alterar' ? <AlterarUsuario /> : <CriarUsuario />}
+        <div className="content">
+          {activeTab === 'alterar' ? <AlterarUsuario /> : <CriarUsuario />}
+        </div>
       </div>
     </div>
   );
@@ -71,7 +73,7 @@ function AlterarUsuario() {
   };
 
   return (
-    <div>
+    <div className="alterar-usuario"> {/* Classe para estilizar o formulário de alteração de usuário */}
       <h2>Alterar Conta</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -134,7 +136,7 @@ function AlterarUsuario() {
       </form>
 
       {confirmAction === 'delete' && (
-        <div>
+        <div className="delete-confirmation"> {/* Classe para a confirmação de exclusão */}
           <p>Tem certeza de que deseja excluir sua conta?</p>
           <button className="edit-button delete" onClick={confirmDelete}>
             Confirmar Exclusão
@@ -170,7 +172,7 @@ function CriarUsuario() {
   };
 
   return (
-    <div>
+    <div className="criar-usuario"> {/* Classe para estilizar o formulário de criação de usuário */}
       <h2>Criar Conta</h2>
       <form onSubmit={handleSubmit}>
         <div>
