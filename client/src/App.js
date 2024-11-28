@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./comp/Header/Header";
 import Footer from "./comp/Footer/Footer";
 import Login from "./pages/Login/Login";
-import Controle from "./pages/Control/Control";
+import Control from "./pages/Control/Control";
 import Filtro from "./pages/Filter/Filter";
-import User from "./pages/User/User"; // Importando a página User
-import { AuthProvider, useAuth } from "./Auten/AuthContext"; // Importando o contexto de autenticação
-import PrivateRoute from "./Auten/PrivateRoute"; // Importando o PrivateRoute
+import User from "./pages/User/User";
+import { AuthProvider, useAuth } from "./Auten/AuthContext";
+import PrivateRoute from "./Auten/PrivateRoute";
 
 function App() {
   return (
@@ -20,21 +20,28 @@ function App() {
 }
 
 function AppContent() {
-  const { currentUser } = useAuth(); // Acessa o estado do usuário autenticado
+  const { isAuthenticated } = useAuth(); // Usa o estado de autenticação do contexto
 
   return (
     <>
-      {/* Exibe o Header apenas se o usuário estiver logado */}
-      {currentUser && <Header />}
+      {isAuthenticated && <Header />} {/* Exibe o Header se o usuário estiver autenticado */}
 
-      {/* Exibe o conteúdo com base nas rotas */}
       <Routes>
         <Route path="/" element={<Login />} />
 
-        {/* Rotas privadas que só podem ser acessadas se o usuário estiver logado */}
-        <Route path="/filtro" element={<PrivateRoute component={Filtro} />} />
-        <Route path="/controle" element={<PrivateRoute component={Controle} />} />
-        <Route path="/user" element={<PrivateRoute component={User} />} />
+        {/* Rotas privadas usando PrivateRoute */}
+        <Route
+          path="/filtro"
+          element={<PrivateRoute element={<Filtro />} />} // Passando o componente como 'element'
+        />
+        <Route
+          path="/control"
+          element={<PrivateRoute element={<Control />} />} // Passando o componente como 'element'
+        />
+        <Route
+          path="/user"
+          element={<PrivateRoute element={<User />} />} // Passando o componente como 'element'
+        />
       </Routes>
 
       <Footer />

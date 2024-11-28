@@ -4,7 +4,7 @@ import "./User.css";
 
 function User() {
   const [users, setUsers] = useState([]);
-  const [newUser, setNewUser] = useState({ email: "", password: "" });
+  const [newUser, setNewUser] = useState({ email: "", senha: "" });
   const [editingUser, setEditingUser] = useState(null); // Estado para controle do usuário que está sendo editado
 
   const handleDelete = (id) => {
@@ -31,10 +31,10 @@ function User() {
     const newUserObj = {
       id: users.length + 1,
       email: newUser.email,
-      password: newUser.password,
+      senha: newUser.senha,
     };
     setUsers([...users, newUserObj]);
-    setNewUser({ email: "", password: "" }); // Limpa os campos após adicionar
+    setNewUser({ email: "", senha: "" }); // Limpa os campos após adicionar
   };
 
   return (
@@ -70,7 +70,7 @@ function User() {
                 {editingUser && editingUser.id === user.id ? (
                   <input
                     type="password"
-                    value={editingUser.password}
+                    value={editingUser.senha}
                     onChange={(e) =>
                       setEditingUser({
                         ...editingUser,
@@ -131,9 +131,9 @@ function User() {
           type="password"
           className="input-field"
           placeholder="Senha"
-          value={newUser.password}
+          value={newUser.senha}
           onChange={(e) =>
-            setNewUser({ ...newUser, password: e.target.value })
+            setNewUser({ ...newUser, senha: e.target.value })
           }
         />
         <button className="btn btn-success" onClick={handleAddUser}>

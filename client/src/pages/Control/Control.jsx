@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./Control.css";
 
 function Control() {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
+  const [nome, setName] = useState("");
+  const [valor, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [type, setType] = useState("");
   const [products, setProducts] = useState([]);
@@ -11,22 +11,32 @@ function Control() {
 
   // Carregar produtos ao montar o componente
   useEffect(() => {
-    fetch("http://localhost:3000/mercadorias")
+    fetch("http://localhost:3000/mercadorias", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(),
+    })
       .then((response) => response.json())
-      .then((data) => setProducts(data))
-      .catch((error) => console.error("Erro ao carregar produtos:", error));
+      .then((product) => {
+        setProducts((prevProducts) => [...prevProducts, product]);
+        clearForm();
+        alert("Produto adicionado com sucesso!");
+      })
+      .catch((error) => console.error("Erro ao adicionar produto:", error));
   }, []);
 
   const handleAddProduct = () => {
-    if (!name || !price || !quantity || !type) {
+    if (!nome || !valor || !quantity || !type) {
       alert("Preencha todos os campos!");
       return;
     }
 
     const newProduct = {
-      nome: name,
+      nome: nome,
       grupo: type,
-      preco: parseFloat(price),
+      preco: parseFloat(valor),
       quantidade: parseInt(quantity, 10),
     };
 
@@ -50,21 +60,21 @@ function Control() {
     const productToEdit = products.find((product) => product.id === id);
     setEditingProduct(productToEdit);
     setName(productToEdit.nome);
-    setPrice(productToEdit.preco);
+    setPrice(productToEdit.valor);
     setQuantity(productToEdit.quantidade);
     setType(productToEdit.grupo);
   };
 
   const handleSaveEditedProduct = () => {
-    if (!name || !price || !quantity || !type) {
+    if (!nome || !valor || !quantity || !type) {
       alert("Preencha todos os campos!");
       return;
     }
 
     const updatedProduct = {
-      nome: name,
+      nome: nome,
       grupo: type,
-      preco: parseFloat(price),
+      preco: parseFloat(valor),
       quantidade: parseInt(quantity, 10),
     };
 
@@ -89,13 +99,13 @@ function Control() {
       .catch((error) => console.error("Erro ao editar produto:", error));
   };
 
-  const handleDeleteProduct = (name) => {
-    fetch(`http://localhost:3000/mercadorias/${name}`, {
+  const handleDeleteProduct = (nome) => {
+    fetch(`http://localhost:3000/mercadorias/${nome}`, {
       method: "DELETE",
     })
       .then(() => {
         setProducts((prevProducts) =>
-          prevProducts.filter((product) => product.nome !== name)
+          prevProducts.filter((product) => product.nome !== nome)
         );
         alert("Produto excluído com sucesso!");
       })
@@ -110,16 +120,16 @@ function Control() {
   };
 
   return (
-    <div className="control">
+    <div className="controle">
       <h2 style={{ textAlign: "center" }}>Controle de Estoque</h2>
       <div className="form-container" style={{ margin: "0 auto", width: "50%" }}>
         <div className="form-group">
           <label>Nome do Produto</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          <input type="text" value={nome} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="form-group">
           <label>Preço</label>
-          <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
+          <input type="number" value={valor} onChange={(e) => setPrice(e.target.value)} />
         </div>
         <div className="form-group">
           <label>Quantidade</label>
@@ -166,7 +176,7 @@ function Control() {
               <tr key={product.id}>
                 <td>{product.id}</td>
                 <td>{product.nome}</td>
-                <td>R${product.preco}</td>
+                <td>R${product.valor}</td>
                 <td>{product.quantidade}</td>
                 <td>{product.grupo}</td>
                 <td>

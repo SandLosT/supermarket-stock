@@ -17,7 +17,7 @@ function Login() {
 
     try {
         await login(email, password); // Chama a função de login do contexto
-        navigate('/controle'); // Redireciona para a página de controle após login bem-sucedido
+        navigate('/control'); // Redireciona para a página de controle após login bem-sucedido
     } catch (err) {
         setError('Credenciais inválidas. Tente novamente.');
     } finally {

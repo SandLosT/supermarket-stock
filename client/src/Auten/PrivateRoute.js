@@ -1,23 +1,18 @@
 import React from "react";
-import { Route, Navigate } from "react-router-dom"; // Alterado para importar o Navigate
+import { Navigate } from "react-router-dom"; // Use o Navigate para redirecionar
 import { useAuth } from './AuthContext'; // Importa o hook de autenticação
 
 // Rota privada para proteger páginas específicas
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  const { currentUser } = useAuth(); // Pega o estado do usuário autenticado
+const PrivateRoute = ({ element }) => {
+  const { isAuthenticated } = useAuth(); // Obtém o estado de autenticação
 
-  return (
-    <Route
-      {...rest}
-      element={
-        currentUser ? (
-          <Component /> // Exibe o componente se o usuário estiver logado
-        ) : (
-          <Navigate to="/" /> // Redireciona para a página de login caso contrário
-        )
-      }
-    />
-  );
+  if (!isAuthenticated) {
+    // Se não estiver autenticado, redireciona para a página de login
+    return <Navigate to="/" />;
+  }
+
+  // Se estiver autenticado, renderiza o componente passado em "element"
+  return element;
 };
 
 export default PrivateRoute;
