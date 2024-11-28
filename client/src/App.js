@@ -1,38 +1,40 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from './comp/Header/Header';
 import Footer from './comp/Footer/Footer';
 import Login from './pages/Login/Login';
 import Controle from './pages/Control/Control';
 import Filtro from './pages/Filter/Filter';
 import User from './pages/User/User'; // Importando a página User
+import { AuthProvider, useAuth } from './Auten/AuthContext'; // Importando o contexto de autenticação
+import PrivateRoute from './Auten/PrivateRoute'; // Importando o PrivateRoute
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticação
-
   return (
-    <Router>
-      <AppContent isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthProvider>
   );
 }
 
-function AppContent({ isAuthenticated, setIsAuthenticated }) {
-  const location = useLocation(); // Pega a localização atual da aplicação
+function AppContent() {
+  const { currentUser } = useAuth(); // Acessa o estado do usuário autenticado
 
   return (
     <>
-      {/* Exibe o Header apenas se não estiver na página de login */}
-      {location.pathname !== '/' && (
-        <Header isAuthenticated={isAuthenticated} />
-      )}
+      {/* Exibe o Header apenas se o usuário estiver logado */}
+      {currentUser && <Header />}
 
-      {/* Exibe a área de conteúdo com base na rota */}
+      {/* Exibe o conteúdo com base nas rotas */}
       <Routes>
-        <Route path="/" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/filtro" element={<Filtro />} />
-        <Route path="/controle" element={<Controle />} />
-        <Route path="/user" element={<User />} /> {/* Adicionando a rota para a página User */}
+        <Route path="/" element={<Login />} />
+        
+        {/* Rotas privadas que só podem ser acessadas se o usuário estiver logado */}
+        <PrivateRoute path="/filtro" component={Filtro} />
+        <PrivateRoute path="/controle" component={Controle} />
+        <PrivateRoute path="/user" component={User} />
       </Routes>
 
       <Footer />

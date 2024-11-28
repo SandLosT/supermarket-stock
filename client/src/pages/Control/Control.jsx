@@ -1,81 +1,127 @@
-import React, { useState, useEffect } from 'react';
-import './Control.css';
+import React, { useState, useEffect } from "react";
+import "./Control.css";
 
 function Control() {
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [type, setType] = useState('');
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [type, setType] = useState("");
   const [products, setProducts] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
 
-  // Fetch para buscar todos os produtos na inicialização
+  // Carregar produtos ao montar o componente
   useEffect(() => {
-    fetch('http://localhost:3000/mercadorias') // Ajuste para o endpoint correto do back-end
+    fetch("http://localhost:3000/mercadorias")
       .then((response) => response.json())
       .then((data) => setProducts(data))
-      .catch((error) => console.error('Erro ao buscar produtos:', error));
+      .catch((error) => console.error("Erro ao carregar produtos:", error));
   }, []);
 
   const handleAddProduct = () => {
     if (!name || !price || !quantity || !type) {
-      alert('Preencha todos os campos');
+      alert("Preencha todos os campos!");
       return;
     }
 
     const newProduct = {
       nome: name,
+      grupo: type,
       preco: parseFloat(price),
-      quantidade: parseInt(quantity),
-      grupo: type.toLowerCase(),
+      quantidade: parseInt(quantity, 10),
     };
 
-    // Enviar produto para o back-end
-    fetch('http://localhost:3000/mercadorias', {
-      method: 'POST',
+    fetch("http://localhost:3000/mercadorias", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newProduct),
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Erro ao adicionar produto');
-        }
-        return response.json();
+      .then((response) => response.json())
+      .then((product) => {
+        setProducts((prevProducts) => [...prevProducts, product]);
+        clearForm();
+        alert("Produto adicionado com sucesso!");
       })
+      .catch((error) => console.error("Erro ao adicionar produto:", error));
+  };
+
+  const handleEditProduct = (id) => {
+    const productToEdit = products.find((product) => product.id === id);
+    setEditingProduct(productToEdit);
+    setName(productToEdit.nome);
+    setPrice(productToEdit.preco);
+    setQuantity(productToEdit.quantidade);
+    setType(productToEdit.grupo);
+  };
+
+  const handleSaveEditedProduct = () => {
+    if (!name || !price || !quantity || !type) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    const updatedProduct = {
+      nome: name,
+      grupo: type,
+      preco: parseFloat(price),
+      quantidade: parseInt(quantity, 10),
+    };
+
+    fetch(`http://localhost:3000/mercadorias/${editingProduct.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedProduct),
+    })
+      .then((response) => response.json())
+      .then((updated) => {
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product.id === updated.id ? updated : product
+          )
+        );
+        clearForm();
+        setEditingProduct(null);
+        alert("Produto atualizado com sucesso!");
+      })
+      .catch((error) => console.error("Erro ao editar produto:", error));
+  };
+
+  const handleDeleteProduct = (name) => {
+    fetch(`http://localhost:3000/mercadorias/${name}`, {
+      method: "DELETE",
+    })
       .then(() => {
-        // Atualizar a lista de produtos no front-end
-        setProducts((prevProducts) => [...prevProducts, newProduct]);
-        setName('');
-        setPrice('');
-        setQuantity('');
-        setType('');
-        alert('Produto adicionado com sucesso!');
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product.nome !== name)
+        );
+        alert("Produto excluído com sucesso!");
       })
-      .catch((error) => console.error('Erro ao adicionar produto:', error));
+      .catch((error) => console.error("Erro ao excluir produto:", error));
+  };
+
+  const clearForm = () => {
+    setName("");
+    setPrice("");
+    setQuantity("");
+    setType("");
   };
 
   return (
     <div className="control">
-      <h2>Controle de Estoque</h2>
-      <div className="form-container">
-        <div className="form-field">
+      <h2 style={{ textAlign: "center" }}>Controle de Estoque</h2>
+      <div className="form-container" style={{ margin: "0 auto", width: "50%" }}>
+        <div className="form-group">
           <label>Nome do Produto</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
-        <div className="form-field">
+        <div className="form-group">
           <label>Preço</label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
+          <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
         </div>
-        <div className="form-field">
+        <div className="form-group">
           <label>Quantidade</label>
           <input
             type="number"
@@ -83,32 +129,54 @@ function Control() {
             onChange={(e) => setQuantity(e.target.value)}
           />
         </div>
-        <div className="form-field">
-          <label>Tipo</label>
+        <div className="form-group">
+          <label>Grupo</label>
           <select value={type} onChange={(e) => setType(e.target.value)}>
-            <option value="">Selecione o tipo</option>
-            <option value="A">Legumes - A</option>
-            <option value="frutos">Frutos</option>
-            <option value="panificacao">Panificação</option>
-            <option value="bebidas">Bebidas</option>
-            <option value="congelados">Congelados</option>
+            <option value="">Selecione</option>
+            <option value="A">Legumes</option>
+            <option value="A">Frutos</option>
+            <option value="A">Panificação</option>
+            <option value="B">Bebidas</option>
+            <option value="A">Congelados</option>
+            <option value="H">Higiene Pessoal</option>
+            <option value="L">Produtos de Limpeza</option>
           </select>
         </div>
-        <button className="add-button" onClick={handleAddProduct}>
-          Adicionar Produto
-        </button>
+        {editingProduct ? (
+          <button onClick={handleSaveEditedProduct}>Salvar Edição</button>
+        ) : (
+          <button onClick={handleAddProduct}>Adicionar Produto</button>
+        )}
       </div>
-
       <div className="product-list">
         <h3>Lista de Produtos</h3>
-        <ul>
-          {products.map((product) => (
-            <li key={product.id}>
-              {product.nome} - R${product.preco} - {product.quantidade} unidades -{' '}
-              {product.grupo}
-            </li>
-          ))}
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Preço</th>
+              <th>Quantidade</th>
+              <th>Grupo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr key={product.id}>
+                <td>{product.id}</td>
+                <td>{product.nome}</td>
+                <td>R${product.preco}</td>
+                <td>{product.quantidade}</td>
+                <td>{product.grupo}</td>
+                <td>
+                  <button onClick={() => handleEditProduct(product.id)}>Editar</button>
+                  <button onClick={() => handleDeleteProduct(product.nome)}>Excluir</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

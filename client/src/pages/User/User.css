@@ -1,134 +1,79 @@
-/* Estilo geral da estrutura da página */
+/* User.css */
 .user-container {
-  display: flex;
-  justify-content: space-between;
   padding: 20px;
-  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
 }
 
-.sidebar {
-  width: 200px;
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.user-table th,
+.user-table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.user-table th {
   background-color: #f4f4f4;
-  padding: 10px;
 }
 
-.sidebar-item {
-  display: block;
-  padding: 10px;
-  background: #007bff; /* Cor de fundo azul */
-  margin-bottom: 5px;
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  padding: 5px 15px;
+  border: none;
   cursor: pointer;
-  color: white; /* Texto branco */
-  transition: background-color 0.3s ease; /* Transição suave de cor */
+  border-radius: 5px;
 }
 
-.sidebar-item:hover {
-  background: #0056b3; /* Cor mais escura para o efeito hover */
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
 }
 
-.sidebar-item.active {
-  background: #0056b3; /* Cor azul mais escura quando a aba estiver ativa */
+.btn-primary {
+  background-color: #3498db;
+  color: white;
 }
 
-.content {
-  flex-grow: 1;
-  padding: 20px;
-  background-color: #fafafa;
+.add-user-form {
   display: flex;
-  flex-direction: column;
-  align-items: center; /* Centraliza todo o conteúdo da página */
+  gap: 10px;
+  margin-top: 20px;
 }
 
-/* Estilo específico para o formulário */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 100%; /* Garante que o formulário ocupe toda a largura disponível */
-  max-width: 500px; /* Limita a largura máxima do formulário */
-  margin: 0 auto; /* Centraliza o formulário horizontalmente */
-}
-
-input {
+.input-field {
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100%; /* Ajusta para ocupar 100% da largura do contêiner pai */
+  border-radius: 5px;
+  width: 200px;
 }
 
-button {
-  padding: 10px;
-  background-color: #4CAF50;
+.btn-success {
+  background-color: #2ecc71;
   color: white;
+  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
-  width: 100%; /* Garante que o botão ocupe toda a largura do formulário */
 }
 
-button:hover {
-  background-color: #45a049;
+.input-field:focus {
+  border-color: #3498db;
 }
 
-/* Estilo para os botões de editar e excluir */
-.edit-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 20px;
-  width: 100%; /* Ajusta os botões para ocupar toda a largura */
-}
-
-.edit-button {
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
-  border: none;
-  width: 100%; /* Garante que os botões ocupem toda a largura */
-  transition: background-color 0.3s ease;
-}
-
-.edit-button.edit {
-  background-color: #007bff; /* Azul para o botão de editar */
-}
-
-.edit-button.edit:hover {
-  background-color: #0056b3; /* Azul mais escuro no hover */
-}
-
-.edit-button.delete {
-  background-color: #ff4d4d; /* Vermelho para o botão de excluir */
-}
-
-.edit-button.delete:hover {
-  background-color: #cc0000; /* Vermelho mais escuro no hover */
-}
-
-/* Estilo para a confirmação de exclusão */
-div p {
-  margin-top: 20px;
-  text-align: center;
-}
-
-/* Estilo para o botão de criação de usuário */
-.create-button-container {
-  display: flex;
-  justify-content: center; /* Centraliza horizontalmente */
-  margin-top: 20px;
-}
-
-.create-button {
-  padding: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%; /* Garante que o botão ocupe toda a largura */
-}
-
-.create-button:hover {
-  background-color: #45a049;
+.btn:focus {
+  outline: none;
 }
