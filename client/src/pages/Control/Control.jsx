@@ -87,7 +87,7 @@ function Control() {
           <label>Tipo</label>
           <select value={type} onChange={(e) => setType(e.target.value)}>
             <option value="">Selecione o tipo</option>
-            <option value="legumes">Legumes</option>
+            <option value="A">Legumes - A</option>
             <option value="frutos">Frutos</option>
             <option value="panificacao">Panificação</option>
             <option value="bebidas">Bebidas</option>
