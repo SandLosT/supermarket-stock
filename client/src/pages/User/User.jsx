@@ -1,206 +1,145 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './User.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./User.css";
 
 function User() {
-  const [activeTab, setActiveTab] = useState('alterar'); // Aba padrão
-  const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
+  const [newUser, setNewUser] = useState({ email: "", password: "" });
+  const [editingUser, setEditingUser] = useState(null); // Estado para controle do usuário que está sendo editado
 
-  const handleTabClick = (tab) => {
-    setActiveTab(tab); // Atualiza a aba ativa
-    navigate('/user'); // Garante que a URL seja sempre /user
+  const handleDelete = (id) => {
+    const updatedUsers = users.filter((user) => user.id !== id);
+    setUsers(updatedUsers);
+    alert("Usuário excluído com sucesso!");
+  };
+
+  const handleEdit = (id) => {
+    const userToEdit = users.find((user) => user.id === id);
+    setEditingUser(userToEdit); // Define o usuário que está sendo editado
+  };
+
+  const handleSaveEdit = () => {
+    const updatedUsers = users.map((user) =>
+      user.id === editingUser.id ? editingUser : user
+    );
+    setUsers(updatedUsers);
+    setEditingUser(null); // Limpa a edição após salvar
+    alert("Usuário atualizado com sucesso!");
+  };
+
+  const handleAddUser = () => {
+    const newUserObj = {
+      id: users.length + 1,
+      email: newUser.email,
+      password: newUser.password,
+    };
+    setUsers([...users, newUserObj]);
+    setNewUser({ email: "", password: "" }); // Limpa os campos após adicionar
   };
 
   return (
     <div className="user-container">
-      <div className="sidebar">
-        <button
-          className={`sidebar-item ${activeTab === 'alterar' ? 'active' : ''}`}
-          onClick={() => handleTabClick('alterar')}
-        >
-          Alterar Usuário
-        </button>
-        <button
-          className={`sidebar-item ${activeTab === 'criar' ? 'active' : ''}`}
-          onClick={() => handleTabClick('criar')}
-        >
-          Criar Usuário
+      <h2>Lista de Usuários</h2>
+      <table className="user-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Senha</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.id}>
+              <td>{user.id}</td>
+              <td>
+                {editingUser && editingUser.id === user.id ? (
+                  <input
+                    type="email"
+                    value={editingUser.email}
+                    onChange={(e) =>
+                      setEditingUser({ ...editingUser, email: e.target.value })
+                    }
+                  />
+                ) : (
+                  user.email
+                )}
+              </td>
+              <td>
+                {editingUser && editingUser.id === user.id ? (
+                  <input
+                    type="password"
+                    value={editingUser.password}
+                    onChange={(e) =>
+                      setEditingUser({
+                        ...editingUser,
+                        password: e.target.value,
+                      })
+                    }
+                  />
+                ) : (
+                  "*****" // Exibe uma senha mascarada
+                )}
+              </td>
+              <td className="actions">
+                {editingUser && editingUser.id === user.id ? (
+                  <>
+                    <button
+                      className="btn btn-success"
+                      onClick={handleSaveEdit}
+                    >
+                      Salvar
+                    </button>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => setEditingUser(null)} // Cancela a edição
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(user.id)}
+                    >
+                      Excluir
+                    </button>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleEdit(user.id)}
+                    >
+                      Editar
+                    </button>
+                  </>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="add-user-form">
+        <input
+          type="email"
+          className="input-field"
+          placeholder="Email"
+          value={newUser.email}
+          onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+        />
+        <input
+          type="password"
+          className="input-field"
+          placeholder="Senha"
+          value={newUser.password}
+          onChange={(e) =>
+            setNewUser({ ...newUser, password: e.target.value })
+          }
+        />
+        <button className="btn btn-success" onClick={handleAddUser}>
+          Adicionar Usuário
         </button>
       </div>
-
-      <div className="content">
-        {activeTab === 'alterar' ? <AlterarUsuario /> : <CriarUsuario />}
-      </div>
-    </div>
-  );
-}
-
-function AlterarUsuario() {
-  const [userData, setUserData] = useState({
-    email: 'usuario@exemplo.com',
-    senha: 'senha123',
-  });
-  const [isEditing, setIsEditing] = useState(false);
-  const [confirmAction, setConfirmAction] = useState(null);
-  const navigate = useNavigate();
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUserData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (confirmAction === 'edit') {
-      setIsEditing(false);
-      alert('Edição concluída!');
-    }
-  };
-
-  const handleDelete = () => {
-    setConfirmAction('delete');
-  };
-
-  const confirmDelete = () => {
-    console.log('Conta excluída:', userData);
-    alert('Conta excluída com sucesso!');
-    navigate('/login');
-  };
-
-  return (
-    <div>
-      <h2>Alterar Conta</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={userData.email}
-            onChange={handleInputChange}
-            placeholder="Digite o novo email"
-            required
-            disabled={!isEditing}
-          />
-        </div>
-        <div>
-          <label>Nova Senha</label>
-          <input
-            type="password"
-            name="senha"
-            value={userData.senha}
-            onChange={handleInputChange}
-            placeholder="Digite a nova senha"
-            required
-            disabled={!isEditing}
-          />
-        </div>
-        <div className="edit-buttons">
-          {isEditing ? (
-            <>
-              <button className="edit-button edit" type="submit">
-                Confirmar Alteração
-              </button>
-              <button
-                className="edit-button cancel"
-                type="button"
-                onClick={() => setIsEditing(false)}
-              >
-                Cancelar
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="edit-button edit"
-                type="button"
-                onClick={() => setIsEditing(true)}
-              >
-                Editar
-              </button>
-              <button
-                className="edit-button delete"
-                type="button"
-                onClick={handleDelete}
-              >
-                Excluir Conta
-              </button>
-            </>
-          )}
-        </div>
-      </form>
-
-      {confirmAction === 'delete' && (
-        <div>
-          <p>Tem certeza de que deseja excluir sua conta?</p>
-          <button className="edit-button delete" onClick={confirmDelete}>
-            Confirmar Exclusão
-          </button>
-          <button
-            className="edit-button cancel"
-            onClick={() => setConfirmAction(null)}
-          >
-            Cancelar
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function CriarUsuario() {
-  const [newUserData, setNewUserData] = useState({ email: '', senha: '' });
-  const [userCreated, setUserCreated] = useState(false);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewUserData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setUserCreated(true);
-    alert('Novo usuário cadastrado!');
-  };
-
-  return (
-    <div>
-      <h2>Criar Conta</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={newUserData.email}
-            onChange={handleInputChange}
-            placeholder="Digite o email"
-            required
-          />
-        </div>
-        <div>
-          <label>Senha</label>
-          <input
-            type="password"
-            name="senha"
-            value={newUserData.senha}
-            onChange={handleInputChange}
-            placeholder="Digite a senha"
-            required
-          />
-        </div>
-        <button className="edit-button edit" type="submit">
-          Criar
-        </button>
-      </form>
-
-      {userCreated && <p>Usuário criado com sucesso!</p>}
     </div>
   );
 }

@@ -1,39 +1,50 @@
-.login {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
+/* Estilos que afetam apenas a página de login */
+.login-page {
+  display: flex;
+  justify-content: center;  /* Centraliza horizontalmente */
+  align-items: center;      /* Centraliza verticalmente */
+  height: 100vh;            /* Ocupa toda a altura da tela */
+  margin: 0;                /* Remove a margem padrão */
+  background-color: #f4f4f4;
+}
+
+.login-page .login {
+  max-width: 900px;         /* Aumenta a largura do formulário */
+  min-height: 400px;        /* Aumenta a altura do formulário */
+  padding: 40px;            /* Ajusta o padding para um espaço interno maior */
+  border: 3px solid #ccc;   /* Corrige o erro na espessura da borda */
   border-radius: 8px;
   background-color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;  /* Alinha o conteúdo verticalmente no centro */
 }
 
-h2 {
+.login-page h2 {
   text-align: center;
   margin-bottom: 20px;
 }
 
-.form-group {
+.login-page .form-group {
   width: 100%;
 }
 
-label {
+.login-page label {
   display: block;
   font-weight: bold;
   margin-bottom: 5px;
 }
 
-input {
-  width: 100%;
+.login-page input {
+  width: 100%;              /* Garante que o input ocupe 100% da largura do formulário */
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 10px;
 }
 
-button {
+.login-page button {
   padding: 10px;
   border: none;
   border-radius: 4px;
@@ -41,14 +52,18 @@ button {
   color: #fff;
   font-size: 16px;
   cursor: pointer;
-  width: 100%;
+  width: auto;              /* O botão terá largura baseada no conteúdo */
+  margin-top: 10px;
+  display: block;           /* Garante que o botão seja tratado como bloco */
+  margin-left: auto;        /* Centraliza o botão horizontalmente */
+  margin-right: auto;       /* Centraliza o botão horizontalmente */
 }
 
-button:hover {
+.login-page button:hover {
   background-color: #0056b3;
 }
 
-.error {
+.login-page .error {
   color: red;
   font-size: 14px;
   margin-bottom: 10px;

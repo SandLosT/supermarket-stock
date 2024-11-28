@@ -32,7 +32,7 @@ function Header() {
           {showDropdown && (
             <div className="dropdown-menu">
               <Link to="/user" className="dropdown-item">Alterar Conta / Criar Conta</Link>
-              <button className="dropdown-item" onClick={handleLogout}>Sair</button>
+              <button className="dropdown-item logout" onClick={handleLogout}>Sair</button>
             </div>
           )}
         </div>

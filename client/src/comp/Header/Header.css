@@ -71,3 +71,14 @@
 .dropdown-item:active {
   background-color: #e0e0e0;
 }
+
+/* Estilo para o botão "Sair" dentro do dropdown */
+.dropdown-item.logout {
+  background-color: #ff4d4d; /* Cor de fundo vermelha */
+  color: white; /* Cor do texto em branco */
+}
+
+.dropdown-item.logout:hover {
+  background-color: #cc0000; /* Cor de fundo vermelha mais escura ao passar o mouse */
+  color: white; /* Mantém o texto branco no hover */
+}
