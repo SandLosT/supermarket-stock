@@ -5,7 +5,8 @@
 
 
 /.pnp
-.pnp.js
+.pnp.jsgit rm -r --cached node_modules
+
 
 # testing
 /coverage
