@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./User.css";
 
 function User() {
@@ -40,85 +39,89 @@ function User() {
   return (
     <div className="user-container">
       <h2>Lista de Usuários</h2>
-      <table className="user-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>Senha</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>
-                {editingUser && editingUser.id === user.id ? (
-                  <input
-                    type="email"
-                    value={editingUser.email}
-                    onChange={(e) =>
-                      setEditingUser({ ...editingUser, email: e.target.value })
-                    }
-                  />
-                ) : (
-                  user.email
-                )}
-              </td>
-              <td>
-                {editingUser && editingUser.id === user.id ? (
-                  <input
-                    type="password"
-                    value={editingUser.senha}
-                    onChange={(e) =>
-                      setEditingUser({
-                        ...editingUser,
-                        password: e.target.value,
-                      })
-                    }
-                  />
-                ) : (
-                  "*****" // Exibe uma senha mascarada
-                )}
-              </td>
-              <td className="actions">
-                {editingUser && editingUser.id === user.id ? (
-                  <>
-                    <button
-                      className="btn btn-success"
-                      onClick={handleSaveEdit}
-                    >
-                      Salvar
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      onClick={() => setEditingUser(null)} // Cancela a edição
-                    >
-                      Cancelar
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleDelete(user.id)}
-                    >
-                      Excluir
-                    </button>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleEdit(user.id)}
-                    >
-                      Editar
-                    </button>
-                  </>
-                )}
-              </td>
+      <div className="user-table-container">
+        <table className="user-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Email</th>
+              <th>Senha</th>
+              <th>Ações</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>
+                  {editingUser && editingUser.id === user.id ? (
+                    <input
+                      type="email"
+                      value={editingUser.email}
+                      onChange={(e) =>
+                        setEditingUser({ ...editingUser, email: e.target.value })
+                      }
+                    />
+                  ) : (
+                    user.email
+                  )}
+                </td>
+                <td>
+                  {editingUser && editingUser.id === user.id ? (
+                    <input
+                      type="password"
+                      value={editingUser.senha}
+                      onChange={(e) =>
+                        setEditingUser({
+                          ...editingUser,
+                          senha: e.target.value,
+                        })
+                      }
+                    />
+                  ) : (
+                    "*****"
+                  )}
+                </td>
+                <td className="actions">
+                  {editingUser && editingUser.id === user.id ? (
+                    <div className="edit-buttons">
+                      <button
+                        className="edit-button edit"
+                        onClick={handleSaveEdit}
+                      >
+                        Salvar
+                      </button>
+                      <button
+                        className="edit-button delete"
+                        onClick={() => setEditingUser(null)} // Cancela a edição
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="edit-buttons">
+                      <button
+                        className="edit-button edit"
+                        onClick={() => handleEdit(user.id)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="edit-button delete"
+                        onClick={() => handleDelete(user.id)}
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Formulário para adicionar usuário */}
       <div className="add-user-form">
         <input
           type="email"

@@ -19,7 +19,7 @@ function Header() {
     <header className="header">
       <div className="header-left">
         <Link to="/filtro" className="header-link">Filtro</Link>
-        <Link to="/controle" className="header-link">Controle</Link>
+        <Link to="/controle" className="header-link">Controle</Link> {/* Corrigido para "/controle" */}
       </div>
       <div className="header-right">
         <div className="user-dropdown">

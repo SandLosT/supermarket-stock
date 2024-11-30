@@ -6,21 +6,21 @@ function Control() {
   const [valor, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [type, setType] = useState("");
-  const [products, setProducts] = useState([]);
+  const [mercadorias, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
 
   // Carregar produtos ao montar o componente
   useEffect(() => {
     fetch("http://localhost:3000/mercadorias", {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(),
     })
       .then((response) => response.json())
-      .then((product) => {
-        setProducts((prevProducts) => [...prevProducts, product]);
+      .then((mercadorias) => {
+        setProducts((prevProducts) => [...prevProducts, mercadorias]);
         clearForm();
         alert("Produto adicionado com sucesso!");
       })
@@ -36,8 +36,8 @@ function Control() {
     const newProduct = {
       nome: nome,
       grupo: type,
-      preco: parseFloat(valor),
-      quantidade: parseInt(quantity, 10),
+      valor: valor,
+      quantidade: quantity,
     };
 
     fetch("http://localhost:3000/mercadorias", {
@@ -48,8 +48,8 @@ function Control() {
       body: JSON.stringify(newProduct),
     })
       .then((response) => response.json())
-      .then((product) => {
-        setProducts((prevProducts) => [...prevProducts, product]);
+      .then((mercadorias) => {
+        setProducts((prevProducts) => [...prevProducts, mercadorias]);
         clearForm();
         alert("Produto adicionado com sucesso!");
       })
@@ -57,7 +57,7 @@ function Control() {
   };
 
   const handleEditProduct = (id) => {
-    const productToEdit = products.find((product) => product.id === id);
+    const productToEdit = mercadorias.find((mercadorias) => mercadorias.id === id);
     setEditingProduct(productToEdit);
     setName(productToEdit.nome);
     setPrice(productToEdit.valor);
@@ -74,7 +74,7 @@ function Control() {
     const updatedProduct = {
       nome: nome,
       grupo: type,
-      preco: parseFloat(valor),
+      valor: parseFloat(valor),
       quantidade: parseInt(quantity, 10),
     };
 
@@ -88,8 +88,8 @@ function Control() {
       .then((response) => response.json())
       .then((updated) => {
         setProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product.id === updated.id ? updated : product
+          prevProducts.map((mercadorias) =>
+            mercadorias.id === updated.id ? updated : mercadorias
           )
         );
         clearForm();
@@ -105,7 +105,7 @@ function Control() {
     })
       .then(() => {
         setProducts((prevProducts) =>
-          prevProducts.filter((product) => product.nome !== nome)
+          prevProducts.filter((mercadorias) => mercadorias.nome !== nome)
         );
         alert("Produto excluído com sucesso!");
       })
@@ -172,16 +172,16 @@ function Control() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td>{product.id}</td>
-                <td>{product.nome}</td>
-                <td>R${product.valor}</td>
-                <td>{product.quantidade}</td>
-                <td>{product.grupo}</td>
+            {mercadorias.map((mercadorias) => (
+              <tr key={mercadorias.id}>
+                <td>{mercadorias.id}</td>
+                <td>{mercadorias.nome}</td>
+                <td>R${mercadorias.valor}</td>
+                <td>{mercadorias.quantidade}</td>
+                <td>{mercadorias.grupo}</td>
                 <td>
-                  <button onClick={() => handleEditProduct(product.id)}>Editar</button>
-                  <button onClick={() => handleDeleteProduct(product.nome)}>Excluir</button>
+                  <button onClick={() => handleEditProduct(mercadorias.id)}>Editar</button>
+                  <button onClick={() => handleDeleteProduct(mercadorias.nome)}>Excluir</button>
                 </td>
               </tr>
             ))}

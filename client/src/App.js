@@ -35,9 +35,10 @@ function AppContent() {
           element={<PrivateRoute element={<Filtro />} />} // Passando o componente como 'element'
         />
         <Route
-          path="/control"
-          element={<PrivateRoute element={<Control />} />} // Passando o componente como 'element'
-        />
+  path="/controle"
+  element={<PrivateRoute element={<Control />} />} // Passando o componente como 'element'
+/>
+
         <Route
           path="/user"
           element={<PrivateRoute element={<User />} />} // Passando o componente como 'element'
