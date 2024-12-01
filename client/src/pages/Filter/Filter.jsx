@@ -1,36 +1,36 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Filter.css';
 
-function Filter({ products }) {
+function Filter({ mercadorias }) {
   const [nameFilter, setNameFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filteredMercadorias, setFilteredMercadorias] = useState([]);
 
   // Função para aplicar o filtro
   const handleFilter = useCallback(() => {
-    let filtered = Array.isArray(products) ? [...products] : []; // Garante que products é um array
+    let filtered = Array.isArray(mercadorias) ? [...mercadorias] : []; // Garante que mercadorias é um array
 
     if (nameFilter) {
-      filtered = filtered.filter((product) =>
-        product.name.toLowerCase().includes(nameFilter.toLowerCase())
+      filtered = filtered.filter((mercadoria) =>
+        mercadoria.name.toLowerCase().includes(nameFilter.toLowerCase())
       );
     }
 
     if (typeFilter) {
-      filtered = filtered.filter((product) =>
-        product.type.toLowerCase() === typeFilter.toLowerCase()
+      filtered = filtered.filter((mercadoria) =>
+        mercadoria.type.toLowerCase() === typeFilter.toLowerCase() // Filtrando pelo tipo
       );
     }
 
-    setFilteredProducts(filtered);
-  }, [products, nameFilter, typeFilter]); // Adicionando dependências de produtos, nameFilter e typeFilter
+    setFilteredMercadorias(filtered);
+  }, [mercadorias, nameFilter, typeFilter]); // Adicionando dependências de mercadorias, nameFilter e typeFilter
 
-  // Atualiza o filtro sempre que os produtos mudarem
+  // Atualiza o filtro sempre que as mercadorias mudarem
   useEffect(() => {
-    if (Array.isArray(products)) {
-      setFilteredProducts(products);
+    if (Array.isArray(mercadorias)) {
+      setFilteredMercadorias(mercadorias);
     }
-  }, [products]);
+  }, [mercadorias]);
 
   // Atualiza o filtro de acordo com os campos de busca
   useEffect(() => {
@@ -39,15 +39,15 @@ function Filter({ products }) {
 
   return (
     <div className="filter">
-      <h2>Filtrar Produtos</h2>
+      <h2>Filtrar Mercadorias</h2>
       <div className="form-group">
-        <label htmlFor="name">Nome do Produto:</label>
+        <label htmlFor="name">Nome da Mercadoria:</label>
         <input
           type="text"
           id="name"
           value={nameFilter}
           onChange={(e) => setNameFilter(e.target.value)}
-          placeholder="Digite o nome do produto"
+          placeholder="Digite o nome da mercadoria"
         />
       </div>
 
@@ -59,11 +59,13 @@ function Filter({ products }) {
           onChange={(e) => setTypeFilter(e.target.value)}
         >
           <option value="">Selecione o tipo</option>
-          <option value="legumes">Legumes</option>
-          <option value="frutos">Frutos</option>
-          <option value="panificacao">Panificação</option>
-          <option value="bebidas">Bebidas</option>
-          <option value="congelados">Congelados</option>
+          <option value="A">Legumes</option>
+          <option value="A">Frutos</option>
+          <option value="A">Panificação</option>
+          <option value="B">Bebidas</option>
+          <option value="A">Congelados</option>
+          <option value="H">Higiene Pessoal</option>
+          <option value="L">Produtos de Limpeza</option>
         </select>
       </div>
 
@@ -83,19 +85,19 @@ function Filter({ products }) {
           </tr>
         </thead>
         <tbody>
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <tr key={product.id}>
-                <td>{product.id}</td>
-                <td>{product.name}</td>
-                <td>{product.price}</td>
-                <td>{product.quantity}</td>
-                <td>{product.type}</td>
+          {filteredMercadorias.length > 0 ? (
+            filteredMercadorias.map((mercadoria) => (
+              <tr key={mercadoria.id}>
+                <td>{mercadoria.id}</td>
+                <td>{mercadoria.name}</td>
+                <td>{mercadoria.price}</td>
+                <td>{mercadoria.quantity}</td>
+                <td>{mercadoria.type}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5">Nenhum produto encontrado</td>
+              <td colSpan="5">Nenhuma mercadoria encontrada</td>
             </tr>
           )}
         </tbody>

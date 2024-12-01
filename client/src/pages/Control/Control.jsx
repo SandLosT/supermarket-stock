@@ -16,15 +16,19 @@ function Control() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(),
     })
-      .then((response) => response.json())
-      .then((mercadorias) => {
-        setProducts((prevProducts) => [...prevProducts, mercadorias]);
-        clearForm();
-        alert("Produto adicionado com sucesso!");
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao buscar mercadorias");
+        }
+        return response.json();
       })
-      .catch((error) => console.error("Erro ao adicionar produto:", error));
+      .then((data) => {
+        console.log("Dados recebidos:", data);
+        setProducts(data); // Define o estado com os produtos recebidos
+        clearForm();
+      })
+      .catch((error) => console.error("Erro ao buscar produtos:", error));
   }, []);
 
   const handleAddProduct = () => {
@@ -32,14 +36,14 @@ function Control() {
       alert("Preencha todos os campos!");
       return;
     }
-
+  
     const newProduct = {
       nome: nome,
       grupo: type,
-      valor: valor,
-      quantidade: quantity,
+      valor: parseFloat(valor),
+      quantidade: parseInt(quantity, 10),
     };
-
+  
     fetch("http://localhost:3000/mercadorias", {
       method: "POST",
       headers: {
@@ -47,17 +51,39 @@ function Control() {
       },
       body: JSON.stringify(newProduct),
     })
-      .then((response) => response.json())
-      .then((mercadorias) => {
-        setProducts((prevProducts) => [...prevProducts, mercadorias]);
-        clearForm();
-        alert("Produto adicionado com sucesso!");
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao adicionar produto");
+        }
+        return response.json();
+      })
+      .then(() => {
+        // Atualiza a lista de produtos diretamente após o sucesso
+        fetch("http://localhost:3000/mercadorias", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Erro ao buscar mercadorias");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            setProducts(data); // Atualiza o estado com os produtos mais recentes
+            clearForm();
+            alert("Produto adicionado com sucesso!");
+          })
+          .catch((error) => console.error("Erro ao atualizar lista de produtos:", error));
       })
       .catch((error) => console.error("Erro ao adicionar produto:", error));
   };
+  
 
   const handleEditProduct = (id) => {
-    const productToEdit = mercadorias.find((mercadorias) => mercadorias.id === id);
+    const productToEdit = mercadorias.find((produto) => produto.id === id);
     setEditingProduct(productToEdit);
     setName(productToEdit.nome);
     setPrice(productToEdit.valor);
@@ -85,11 +111,16 @@ function Control() {
       },
       body: JSON.stringify(updatedProduct),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao editar produto");
+        }
+        return response.json();
+      })
       .then((updated) => {
         setProducts((prevProducts) =>
-          prevProducts.map((mercadorias) =>
-            mercadorias.id === updated.id ? updated : mercadorias
+          prevProducts.map((mercadoria) =>
+            mercadoria.id === updated.id ? updated : mercadoria
           )
         );
         clearForm();
@@ -99,13 +130,19 @@ function Control() {
       .catch((error) => console.error("Erro ao editar produto:", error));
   };
 
-  const handleDeleteProduct = (nome) => {
-    fetch(`http://localhost:3000/mercadorias/${nome}`, {
+  const handleDeleteProduct = (id) => {
+    fetch(`http://localhost:3000/mercadorias/${id}`, {
       method: "DELETE",
     })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erro ao deletar produto");
+        }
+        return response.json();
+      })
       .then(() => {
         setProducts((prevProducts) =>
-          prevProducts.filter((mercadorias) => mercadorias.nome !== nome)
+          prevProducts.filter((mercadoria) => mercadoria.id !== id)
         );
         alert("Produto excluído com sucesso!");
       })
@@ -172,16 +209,16 @@ function Control() {
             </tr>
           </thead>
           <tbody>
-            {mercadorias.map((mercadorias) => (
-              <tr key={mercadorias.id}>
-                <td>{mercadorias.id}</td>
-                <td>{mercadorias.nome}</td>
-                <td>R${mercadorias.valor}</td>
-                <td>{mercadorias.quantidade}</td>
-                <td>{mercadorias.grupo}</td>
+            {mercadorias.map((mercadoria) => (
+              <tr key={mercadoria.id}>  {/* Usar id único */}
+                <td>{mercadoria.id}</td>
+                <td>{mercadoria.nome}</td>
+                <td>R${mercadoria.valor}</td>
+                <td>{mercadoria.quantidade}</td>
+                <td>{mercadoria.grupo}</td>
                 <td>
-                  <button onClick={() => handleEditProduct(mercadorias.id)}>Editar</button>
-                  <button onClick={() => handleDeleteProduct(mercadorias.nome)}>Excluir</button>
+                  <button onClick={() => handleEditProduct(mercadoria.id)}>Editar</button>
+                  <button onClick={() => handleDeleteProduct(mercadoria.id)}>Excluir</button>
                 </td>
               </tr>
             ))}
