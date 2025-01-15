@@ -4,7 +4,7 @@ const conexao = mysql.createConnection({
     host: '127.0.0.1',
     port: '3306',
     user: 'root',
-    password: 'Mirela1233@',
+    password: '130178',
     database: 'bd_estoque_market'
 });
 

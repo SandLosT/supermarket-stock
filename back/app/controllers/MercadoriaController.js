@@ -1,29 +1,16 @@
 import conexao from '../database/conexao.js'
+import MercadoriaRepository from '../repository/MercadoriaRepository.js';
 class MercadoriaController{
 
-    index(req, res) {
-        const sql = "SELECT * FROM mercadorias;";
-        conexao.query(sql, (erro, resultado) =>{
-             if(erro){
-                 console.log(erro);
-                 res.status(404)
-             } else{
-                 res.status(200).json(resultado);
-             }
-        })
+    async index(req, res) {        
+        const resultado = await MercadoriaRepository.create();
+        res.json(resultado);
     };
 
-    show(req, res) {
+    async show(req, res) {
         const id = req.params.id;
-        const sql = "SELECT * FROM mercadorias WHERE id=?";
-        conexao.query(sql, id, (erro, resultado) =>{
-             if(erro){
-                 console.log(erro);
-                 res.status(404)
-             } else{
-                 res.status(200).json(resultado);
-             }
-        })
+        const resultado = await MercadoriaRepository.findById(id);
+        res.json(resultado);
     };
 
     showforname(req, res) {
