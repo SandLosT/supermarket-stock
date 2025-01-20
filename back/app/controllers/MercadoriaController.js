@@ -3,7 +3,7 @@ import MercadoriaRepository from '../repository/MercadoriaRepository.js';
 class MercadoriaController{
 
     async index(req, res) {        
-        const resultado = await MercadoriaRepository.create();
+        const resultado = await MercadoriaRepository.findAll();
         res.json(resultado);
     };
 
@@ -13,90 +13,46 @@ class MercadoriaController{
         res.json(resultado);
     };
 
-    showforname(req, res) {
+    async showforname(req, res) {
+        const nome = req.params.nome;
+        const resultado = await MercadoriaRepository.findbyname(nome);
+        res.json(resultado);
+    };
+
+    async showforgroup(req, res) {
+        const grupo = req.params.grupo; // Captura o grupo enviado como parâmetro na URL
+        const resultado = await MercadoriaRepository.findByGroup(grupo);
+        res.json(resultado);
+    };
+    
+    async store(req, res) {
+        const dados = req.body;
+        const resultado = MercadoriaRepository.create(dados);
+        res.json(resultado)
+    };
+
+    async update(req, res) {
         try {
-            const nome = req.params.nome;
-            console.log("Parâmetro recebido:", nome);
-    
-            const sql = "SELECT * FROM mercadorias WHERE TRIM(LOWER(nome)) = TRIM(LOWER(?))";
-    
-            conexao.query(sql, [nome], (erro, resultado) => {
-                if (erro) {
-                    console.error("Erro na consulta:", erro);
-                    res.status(500).json({ mensagem: "Erro interno do servidor" });
-                } else {
-                    console.log("Resultado da consulta:", resultado);
-                    if (resultado.length === 0) {
-                        res.status(404).json({ mensagem: "Mercadoria não encontrada" });
-                    } else {
-                        res.status(200).json(resultado);
-                    }
-                }
-            });
+            const alteracoes = req.body;
+            const id = req.params.id;
+            const resultado = await MercadoriaRepository.update(alteracoes, id);
+            res.status(200).json(resultado);
         } catch (erro) {
-            console.error("Erro inesperado:", erro);
-            res.status(500).json({ mensagem: "Erro inesperado no servidor" });
+            console.error(erro);
+            res.status(404).json({ message: "Erro ao atualizar a mercadoria." });
         }
     };
-
-    showforgroup(req, res) {
-        const grupo = req.params.grupo; // Captura o grupo enviado como parâmetro na URL
-        console.log("Parâmetro recebido (grupo):", grupo); // Log para verificar o valor recebido
     
-        const sql = "SELECT * FROM mercadorias WHERE grupo = ?"; // Consulta SQL para filtrar pelo grupo
-    
-        conexao.query(sql, [grupo], (erro, resultado) => {
-            if (erro) {
-                console.error("Erro na consulta:", erro);
-                res.status(500).json({ mensagem: "Erro interno do servidor" }); // Erro interno no servidor
-            } else if (resultado.length === 0) {
-                console.log("Nenhuma mercadoria encontrada para o grupo:", grupo);
-                res.status(404).json({ mensagem: "Nenhuma mercadoria encontrada para o grupo especificado" }); // Nenhum dado encontrado
-            } else {
-                console.log("Mercadorias encontradas:", resultado);
-                res.status(200).json(resultado); // Retorna os dados encontrados
-            }
-        });
-    };
-    
-    store(req, res) {
-        const dados = req.body;
-        const sql = "INSERT INTO mercadorias SET ?";
-        conexao.query(sql, dados, (erro, resultado) =>{
-             if(erro){
-                 console.log(erro);
-                 res.status(404)
-             } else{
-                 res.status(201).json(resultado);
-             }
-        })
-    };
-
-    update (req,res) {
-        const alteracoes = req.body;
-        const id = req.params.id;
-        const sql = "UPDATE mercadorias SET ? WHERE id=?";
-        conexao.query(sql,[alteracoes, id], (erro, resultado) =>{
-             if(erro){
-                 console.log(erro);
-                 res.status(404)
-             } else{
-                 res.status(200).json(resultado);
-             }
-        })
-    };
-
-    delete(req, res) {
-        const nome = req.params.nome;
-        const sql = "DELETE FROM mercadorias WHERE nome=?";
-        conexao.query(sql, nome, (erro, resultado) =>{
-             if(erro){
-                 console.log(erro);
-                 res.status(404)
-             } else{
-                 res.status(200).json(resultado);
-             }
-        });
-}}
+    async delete(req, res) {
+        try {
+            const nome = req.params.nome;
+            const resultado = await MercadoriaRepository.delete(nome);
+            res.status(200).json(resultado);
+        } catch (erro) {
+            console.error(erro);
+            res.status(404).json({ message: "Erro ao deletar a mercadoria." });
+        }
+    }
+}
 //padrão Singleton
 export default new MercadoriaController();

@@ -1,111 +1,105 @@
-import conexao from '../database/conexao.js'
+import UsuarioRepository from '../repository/UsuarioRepository.js';
+import bcrypt, { compare } from 'bcrypt';
 class UsuarioController{
-    index(req, res) {
-        const sql = "SELECT * FROM usuarios;";
-        conexao.query(sql, (erro, resultado) => {
-            if (erro) {
-                console.error("Erro ao buscar usuários:", erro);
-                res.status(500).json({ mensagem: "Erro ao buscar usuários" });
-            } else {
-                res.status(200).json(resultado);
-            }
-        });
-    };
+    async index(req, res) {
+        try {
+            const usuarios = await UsuarioRepository.getAll();
+            res.status(200).json(usuarios);
+        } catch (erro) {
+            console.error("Erro ao buscar usuários:", erro);
+            res.status(500).json({ mensagem: "Erro ao buscar usuários" });
+        }
+    }
 
-    show(req, res) {
+    async show(req, res) {
         const id = req.params.id;
-        const sql = "SELECT * FROM usuarios WHERE id=?;";
-        conexao.query(sql, [id], (erro, resultado) => {
-            if (erro) {
-                console.error("Erro ao buscar usuário por ID:", erro);
-                res.status(500).json({ mensagem: "Erro ao buscar usuário" });
-            } else if (resultado.length === 0) {
+        try {
+            const usuario = await UsuarioRepository.getById(id);
+            if (!usuario) {
                 res.status(404).json({ mensagem: "Usuário não encontrado" });
             } else {
-                res.status(200).json(resultado[0]);
+                res.status(200).json(usuario);
             }
-        });
-    };
-    
-    showLogin(req, res)  {
+        } catch (erro) {
+            console.error("Erro ao buscar usuário por ID:", erro);
+            res.status(500).json({ mensagem: "Erro ao buscar usuário" });
+        }
+    }
+
+    async showLogin(req, res) {
         const { email, senha } = req.body;
-    
-        console.log('Dados recebidos:', { email, senha });
-    
-        const sql = 'SELECT * FROM usuarios WHERE email = ?';
-        conexao.query(sql, [email], (erro, resultado) => {
-            if (erro) {
-                console.error('Erro ao executar query:', erro);
-                return res.status(500).json({ mensagem: 'Erro ao consultar o banco de dados.' });
+        try {
+            const usuario = await UsuarioRepository.getByEmail(email);
+            const senhacomparada = await bcrypt.compare(senha, usuario.senha);
+            if (!usuario) {
+                res.status(404).json({ mensagem: "Usuário não encontrado" });
+            }else if(senhacomparada == true){
+                res.status(200).json({
+                    mensagem: "Login bem-sucedido",
+                    usuario: {
+                        id: usuario.id,
+                        nome: usuario.nome,
+                        email: usuario.email,
+                    }
+                });
+            }else{
+                res.status(400).json({mensagem: "senha incorreta"});
             }
-    
-            if (resultado.length === 0) {
-                console.log('Usuário não encontrado.');
-                return res.status(404).json({ mensagem: 'Usuário não encontrado.' });
-            }
-    
-            const usuario = resultado[0];
-            if (usuario.senha !== senha) {
-                console.log('Senha incorreta.');
-                return res.status(401).json({ mensagem: 'Senha incorreta.' });
-            }
-    
-            console.log('Login bem-sucedido!');
-            return res.status(200).json({
-                mensagem: 'Login bem-sucedido',
-                usuario: {
-                    id: usuario.id,
-                    nome: usuario.nome,
-                    email: usuario.email,
-                },
-            });
-        });
-    };
-    
+        } catch (erro) {
+            console.error("Erro ao realizar login:", erro);
+            res.status(500).json({ mensagem: "Erro ao realizar login" });
+        }
+    }
 
-    store(req, res){
+
+    async store(req, res) {
         const dados = req.body;
-        const sql = "INSERT INTO usuarios SET ?";
-        conexao.query(sql, dados, (erro, resultado) => {
-            if (erro) {
-                console.error("Erro ao cadastrar usuário:", erro);
-                res.status(400).json({ mensagem: "Erro ao cadastrar usuário" });
-            } else {
-                res.status(201).json({ mensagem: "Usuário cadastrado com sucesso", id: resultado.insertId });
+        console.log("dados enviados para cadastro: "+ dados.senha);
+        try {
+            if (!dados.nome || !dados.email || !dados.senha) {
+                return res.status(400).json({ mensagem: "Todos os campos são obrigatórios" });
             }
-        });
-    };
+            dados.senha = await bcrypt.hash(dados.senha, 10);
+            console.log(dados.senha);
+            const resultado = await UsuarioRepository.create(dados);
+            res.status(201).json({ mensagem: "Usuário cadastrado com sucesso", id: resultado.insertId });
+        } catch (erro) {
+            console.error("Erro ao cadastrar usuário:", erro);
+            res.status(400).json({ mensagem: "Erro ao cadastrar usuário" });
+        }
+    }
 
-    update(req, res) {
+
+    async update(req, res) {
         const id = req.params.id;
         const dados = req.body;
-        const sql = "UPDATE usuarios SET ? WHERE id=?;";
-        conexao.query(sql, [dados, id], (erro, resultado) => {
-            if (erro) {
-                console.error("Erro ao atualizar usuário:", erro);
-                res.status(500).json({ mensagem: "Erro ao atualizar usuário" });
-            } else if (resultado.affectedRows === 0) {
+        try {
+            const resultado = await UsuarioRepository.update(id, dados);
+            if (resultado.affectedRows === 0) {
                 res.status(404).json({ mensagem: "Usuário não encontrado" });
             } else {
                 res.status(200).json({ mensagem: "Usuário atualizado com sucesso" });
             }
-        });
-    };
-
-    delete(req, res) {
+        } catch (erro) {
+            console.error("Erro ao atualizar usuário:", erro);
+            res.status(500).json({ mensagem: "Erro ao atualizar usuário" });
+        }
+    }
+    //ver como esta qual é a mensagem que é exibida quando não é encontrado nenhum usuario.
+    async delete(req, res) {
         const id = req.params.id;
-        const sql = "DELETE FROM usuarios WHERE id=?;";
-        conexao.query(sql, [id], (erro, resultado) => {
-            if (erro) {
-                console.error("Erro ao excluir usuário:", erro);
-                res.status(500).json({ mensagem: "Erro ao excluir usuário" });
-            } else if (resultado.affectedRows === 0) {
-                res.status(404).json({ mensagem: "Usuário não encontrado" });
+        try {
+            const resultado = await UsuarioRepository.delete(id);
+            if (resultado.affectedRows === 0) {
+                res.status(404).json({ mensagem: "Usuário não encontrado", resultado: resultado});
             } else {
                 res.status(200).json({ mensagem: "Usuário excluído com sucesso" });
             }
-        });
-    };
+        } catch (erro) {
+            console.error("Erro ao excluir usuário:", erro);
+            res.status(500).json({ mensagem: "Erro ao excluir usuário" });
+        }
+    }
 
 }
 //padrão Singleton

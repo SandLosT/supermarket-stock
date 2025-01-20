@@ -48,7 +48,7 @@ app.use(express.json());
     app.delete("/usuarios/:id",UsuarioController.delete)
 
     // End point de alteração de dados do usuário
-    app.put("/usuarios/:id", UsuarioController.store)
+    app.put("/usuarios/:id", UsuarioController.update)
 
 // no metodo acima o "req" significa requisição e o "res" significa resposta.
 export default app;
