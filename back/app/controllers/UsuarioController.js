@@ -1,5 +1,7 @@
 import UsuarioRepository from '../repository/UsuarioRepository.js';
 import bcrypt, { compare } from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
 class UsuarioController{
     async index(req, res) {
         try {
@@ -34,14 +36,16 @@ class UsuarioController{
             if (!usuario) {
                 res.status(404).json({ mensagem: "Usuário não encontrado" });
             }else if(senhacomparada == true){
-                res.status(200).json({
-                    mensagem: "Login bem-sucedido",
-                    usuario: {
-                        id: usuario.id,
-                        nome: usuario.nome,
-                        email: usuario.email,
-                    }
-                });
+            const secret = process.env.JWT_TOKEN
+            const token = jwt.sign(
+                {
+                id: usuario.id
+                },
+                secret,
+            )
+                res.json({message: "Autenticação realizada com sucesso!", token,});
+    
+                //Apos as senha comparadas o token entra em cena!
             }else{
                 res.status(400).json({mensagem: "senha incorreta"});
             }
