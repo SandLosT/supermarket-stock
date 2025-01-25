@@ -13,7 +13,7 @@ class UsuarioRepository{
 
     getById(id) {
         return new Promise((resolve, reject) => {
-            const sql = "SELECT * FROM usuarios WHERE id=?;";
+            const sql = "SELECT nome, email FROM usuarios WHERE id=?;";
             conexao.query(sql, [id], (erro, resultado) => {
                 if (erro) return reject(erro);
                 resolve(resultado[0]);

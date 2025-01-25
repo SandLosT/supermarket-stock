@@ -36,7 +36,7 @@ app.use(express.json());
     app.get("/usuarios",UsuarioController.index)
 
     // End point de busca por ID
-    app.get("/usuarios/:id", UsuarioController.show)
+    app.get("/usuarios/:id", UsuarioController.checkToken,  UsuarioController.show)
 
     // Endpoint de login
     app.post('/login',UsuarioController.showLogin)

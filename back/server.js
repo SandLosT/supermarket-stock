@@ -2,6 +2,7 @@ import express from 'express';  // Certifique-se de que express está importado 
 import cors from 'cors';        // Importando o CORS
 import app from './App.js';     // Importando as rotas do arquivo App.js
 
+
 // Criando a instância do servidor
 const server = express();
 
@@ -12,7 +13,7 @@ server.use(cors());  // Certifique-se de que o CORS está sendo aplicado antes d
 server.use(app);  // Usa as rotas definidas no App.js
 
 // Definir a porta que o servidor vai rodar
-const PORT = 3000;
+const PORT = process.env.SERVER_PORT;
 server.listen(PORT, () => {
     console.log(`Servidor rodando no endereço http://localhost:${PORT}`);
 });

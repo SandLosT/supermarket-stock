@@ -1,6 +1,8 @@
 import UsuarioRepository from '../repository/UsuarioRepository.js';
 import bcrypt, { compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
 
 class UsuarioController{
     async index(req, res) {
@@ -12,7 +14,7 @@ class UsuarioController{
             res.status(500).json({ mensagem: "Erro ao buscar usuários" });
         }
     }
-
+    //rota privada 
     async show(req, res) {
         const id = req.params.id;
         try {
@@ -27,6 +29,22 @@ class UsuarioController{
             res.status(500).json({ mensagem: "Erro ao buscar usuário" });
         }
     }
+    //midware
+    checkToken(req, res, next) {
+        const authHeader = req.headers['authorization'] //aqui selecionamos o local onde fica o token no header
+        const token = authHeader && authHeader.split(' ')[1];//necessário separar pois ele vem assim "Bearer &fjnsdjf" sendo que o token é a segunda parte
+        if(!token){
+            res.json({message: "Acesso negado!"})
+        }else{
+            try { 
+                jwt.verify(token, process.env.JWT_TOKEN );
+                next()
+            } catch (error) {
+                console.log(error.message)
+                res.status(400).json({message:'Token inválido'})
+            }
+    }
+}
 
     async showLogin(req, res) {
         const { email, senha } = req.body;
@@ -36,6 +54,7 @@ class UsuarioController{
             if (!usuario) {
                 res.status(404).json({ mensagem: "Usuário não encontrado" });
             }else if(senhacomparada == true){
+            //Apos as comparações o token entra em cena!
             const secret = process.env.JWT_TOKEN
             const token = jwt.sign(
                 {
@@ -45,7 +64,6 @@ class UsuarioController{
             )
                 res.json({message: "Autenticação realizada com sucesso!", token,});
     
-                //Apos as senha comparadas o token entra em cena!
             }else{
                 res.status(400).json({mensagem: "senha incorreta"});
             }

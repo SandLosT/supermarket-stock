@@ -1,4 +1,3 @@
-import conexao from '../database/conexao.js'
 import MercadoriaRepository from '../repository/MercadoriaRepository.js';
 class MercadoriaController{
 
