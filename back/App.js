@@ -50,5 +50,4 @@ app.use(express.json());
     // End point de alteração de dados do usuário
     app.put("/usuarios/:id", UsuarioController.update)
 
-// no metodo acima o "req" significa requisição e o "res" significa resposta.
 export default app;
