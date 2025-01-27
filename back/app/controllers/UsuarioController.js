@@ -1,8 +1,6 @@
 import UsuarioRepository from '../repository/UsuarioRepository.js';
 import bcrypt, { compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-
 
 class UsuarioController{
     async index(req, res) {
@@ -51,7 +49,7 @@ class UsuarioController{
         try {
             const usuario = await UsuarioRepository.getByEmail(email);
             const senhacomparada = await bcrypt.compare(senha, usuario.senha);
-            if (!usuario) {
+            if (!usuario ) {
                 res.status(404).json({ mensagem: "Usuário não encontrado" });
             }else if(senhacomparada == true){
             //Apos as comparações o token entra em cena!
@@ -69,7 +67,7 @@ class UsuarioController{
             }
         } catch (erro) {
             console.error("Erro ao realizar login:", erro);
-            res.status(500).json({ mensagem: "Erro ao realizar login" });
+            res.status(404).json({ mensagem: "Usuário não encontrado" });
         }
     }
 
