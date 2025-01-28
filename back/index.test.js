@@ -74,6 +74,7 @@ describe('testing rotas "users"', () => {
         expect(res.status).toBe(404);
         expect(res.body).toHaveProperty('mensagem', 'Usuário não encontrado');
     });
+
     //create users
     it("should create a new user", async () => {
         const newUser = {
@@ -129,6 +130,7 @@ describe('testing rotas "users"', () => {
         expect(res.status).toBe(404);
         expect(res.body).toHaveProperty('mensagem', 'Usuário não encontrado');
     });
+    
 
     //delete
     it("should delete a user successfully", async () => {

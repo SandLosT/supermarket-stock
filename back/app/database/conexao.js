@@ -1,8 +1,8 @@
 import mysql from 'mysql2'
 import dotenv from 'dotenv';
 
-
-dotenv.config({ path: './app/database/.env' });
+const fileenv = process.env.Node_ENV === 'production' ? './app/database/.env.prod' : './app/database/.env.test'
+dotenv.config({ path: fileenv });
 const dbPort = process.env.DB_PORT
 const dbUser = process.env.DB_USER
 const dbPassword = process.env.DB_PASS
