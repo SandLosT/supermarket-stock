@@ -71,7 +71,7 @@ class UsuarioController{
         }
     }
 
-
+    //cadastro
     async store(req, res) {
         const dados = req.body;
         console.log("dados enviados para cadastro: "+ dados.senha);

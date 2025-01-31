@@ -4,6 +4,28 @@ import app from "./App.js";
  
 //find all users
 describe('testing rotas "users"', () => {
+    //cria um novo user antes de cada teste porém é sempre o mesmo user
+     beforeEach( async () => {
+        const data = {
+            id: 2,
+            nome: "usuariotest",
+            email: "testeteste@gmail.com",
+            senha: "testeteste"
+        };
+        await request(app).post('/usuarios').send(data);
+    })
+    /*
+    //login antes de tudo para o end-point de autententicação funcinoar
+    beforeAll(async() =>{
+        const loginData = {
+            email: "testeteste@gmail.com",
+            senha: "testeteste"
+        };
+        await request(app).post('/login').send(loginData);
+        const valor = loginData.token;
+    })
+    */
+    //busca uma lista de users
     it("should get all users", async () =>{
         const res = await request(app).get('/usuarios')
         expect(Array.isArray(res.body)).toBe(true);
@@ -15,20 +37,16 @@ describe('testing rotas "users"', () => {
         expect(valorde0).toHaveProperty('nome');
         expect(valorde0).toHaveProperty('email')
     })
-    //busca por id
+    //busca por id 
     it("should get a user by ID", async () => {
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNzM3OTMyNjIyfQ.9dR32yziEdi5YAeKw6P_ZR2_QX5KoLxRu7OG0eyaaEc"; // substitua por um token válido
-        const res = await request(app)
-            .get('/usuarios/2')
-            .set('Authorization', `Bearer ${token}`);
-        
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzM4Mjk3NDE2fQ.-ng9Nag4Rb5VoCVNNengDpogwYISb0mbT_QAC-hSF_w';
+        const res = await request(app).get('/usuarios/2').set('Authorization', `Bearer ${token}`);
         expect(res.status).toBe(200); // Espera um status 200 se encontrado
         expect(res.body).toHaveProperty('nome');
         expect(res.body).toHaveProperty('email');
     });
     
     it("should return 404 if user not found", async () => {
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNzM3OTMyNjIyfQ.9dR32yziEdi5YAeKw6P_ZR2_QX5KoLxRu7OG0eyaaEc"; // substitua por um token válido
         const res = await request(app)
             .get('/usuarios/9999') // Usando um ID que não existe
             .set('Authorization', `Bearer ${token}`);
@@ -78,6 +96,7 @@ describe('testing rotas "users"', () => {
     //create users
     it("should create a new user", async () => {
         const newUser = {
+            id: 1,
             nome: "Granger",
             email: "Granger@teste.com",
             senha: "Grangerteste"
@@ -134,7 +153,7 @@ describe('testing rotas "users"', () => {
 
     //delete
     it("should delete a user successfully", async () => {
-        const res = await request(app).delete('/usuarios/8'); 
+        const res = await request(app).delete('/usuarios/2'); 
     
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('mensagem', 'Usuário excluído com sucesso');
@@ -146,6 +165,7 @@ describe('testing rotas "users"', () => {
         expect(res.status).toBe(404);
         expect(res.body).toHaveProperty('mensagem', 'Usuário não encontrado');
     });
+    beforeAll(async () =>{
+        await request(app).delete('/usuarios/1')
+    })
 })
-
-
