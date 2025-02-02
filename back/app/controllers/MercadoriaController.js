@@ -19,7 +19,7 @@ class MercadoriaController {
         const id = req.params.id;
         try {
             const resultado = await MercadoriaRepository.findById(id);
-            if (resultado.length === 0) {
+            if (!resultado || resultado.length === 0) {
                 return res.status(404).json({ mensagem: 'Mercadoria não encontrada' });
             }
             res.status(200).json(resultado);
@@ -33,10 +33,14 @@ class MercadoriaController {
         const nome = req.params.nome;
         try {
             const resultado = await MercadoriaRepository.findbyname(nome);
-            if (!resultado) {
+
+            // Verifica se o array está vazio
+            if (!resultado || resultado.length === 0) {
                 return res.status(404).json({ mensagem: 'Mercadoria não encontrada' });
             }
-            res.status(200).json(resultado);
+
+            // Retorna o primeiro objeto do array corretamente
+            res.status(200).json(resultado); 
         } catch (erro) {
             console.error(erro);
             res.status(500).json({ mensagem: "Erro ao buscar mercadoria por nome" });
@@ -81,8 +85,8 @@ class MercadoriaController {
             const alteracoes = req.body;
             const id = req.params.id;
             const resultado = await MercadoriaRepository.update(alteracoes, id);
-            const validacao = await MercadoriaRepository.findbyname(req.body.nome);
-            if (resultado.length === 0 || validacao.nome == undefined) {
+            const validacao = await MercadoriaRepository.findById(id);
+            if (resultado.length === 0 || !validacao ) {
                 return res.status(404).json({ mensagem: 'Mercadoria não encontrada' });
             }else{
                 res.status(200).json({ mensagem: 'Mercadoria atualizada com sucesso' });

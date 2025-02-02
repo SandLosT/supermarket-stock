@@ -5,15 +5,42 @@ let token;
 //find all users
 describe('testing rotas "users"', () => {
     //cria um novo user antes de cada teste porém é sempre o mesmo user
-     beforeEach( async () => {
+     beforeAll( async () => {
+        //está sendo criado para testar o delete
         const data = {
-            id: 2,
+            id: 999,
             nome: "usuariotest",
             email: "testeteste@gmail.com",
             senha: "testeteste"
         };
+        //está sendo criado para testar o login;
+        const data2 = {
+            id: 100,
+            nome: "usuariotest2",
+            email: "testeteste2@gmail.com",
+            senha: "testeteste2"
+        };
+        const dataforlogin = {
+            id: 70,
+            nome: "usuariologin",
+            email: "testelogin@gmail.com",
+            senha: "testelogin"
+        };
         await request(app).post('/usuarios').send(data);
+        await request(app).post('/usuarios').send(dataforlogin);
+        await request(app).post('/usuarios').send(data2);
     })
+    afterAll(async () =>{
+        //excluir o 2 porque está sendo criado para um test
+        await request(app).delete('/usuarios/2');
+        //excluir o 100 porque esta sendo criado em um test
+        await request(app).delete('/usuarios/100');
+
+    })
+        
+
+
+
     /*
     //login antes de tudo para o end-point de autententicação funcinoar
     beforeAll(async() =>{
@@ -25,6 +52,7 @@ describe('testing rotas "users"', () => {
         const valor = loginData.token;
     })
     */
+
     //busca uma lista de users
     it("should get all users", async () =>{
         const res = await request(app).get('/usuarios')
@@ -58,8 +86,8 @@ describe('testing rotas "users"', () => {
     //login
     it("should login a user successfully", async () => {
         const loginData = {
-            email: "testeteste@gmail.com",
-            senha: "testeteste"
+            email: "testelogin@gmail.com",
+            senha: "testelogin"
         };
         
         const res = await request(app).post('/login').send(loginData);
@@ -96,7 +124,7 @@ describe('testing rotas "users"', () => {
     //create users
     it("should create a new user", async () => {
         const newUser = {
-            id: 1,
+            id: 2,
             nome: "Granger",
             email: "Granger@teste.com",
             senha: "Grangerteste"
@@ -124,12 +152,12 @@ describe('testing rotas "users"', () => {
     //alteration
     it("should update a user successfully", async () => {
         const updatedData = {
-            nome: "Usuário Atualizado",
-            email: "atualizado@teste.com"
+            nome: "kazuzaaa",
+            email: "kazuzabixoloko@outlook.com"
         };
     
         const res = await request(app)
-            .put('/usuarios/18') // Supondo que o usuário com ID 1 exista
+            .put('/usuarios/1') // Supondo que o usuário com ID 1 exista
             .send(updatedData);
     
         expect(res.status).toBe(200);
@@ -153,7 +181,7 @@ describe('testing rotas "users"', () => {
 
     //delete
     it("should delete a user successfully", async () => {
-        const res = await request(app).delete('/usuarios/2'); 
+        const res = await request(app).delete('/usuarios/999'); 
     
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('mensagem', 'Usuário excluído com sucesso');
@@ -173,23 +201,6 @@ describe('testing rotas "users"', () => {
     // Desafio: Testes das rotas de Mercadorias
 });
 describe('Testing rotas "mercadorias"', () => {
-    // Cria um novo usuário e faz login antes dos testes
-    beforeAll(async () => {
-        const userData = {
-            id: 2,
-            nome: "usuariotest",
-            email: "testeteste@gmail.com",
-            senha: "testeteste"
-        };
-        await request(app).post('/usuarios').send(userData);
-
-        const loginData = {
-            email: "testeteste@gmail.com",
-            senha: "testeteste"
-        };
-        const loginResponse = await request(app).post('/login').send(loginData);
-        token = loginResponse.body.token;
-    });
 
     // Teste: Listar todas as mercadorias
     it("should get all products", async () => {
@@ -211,16 +222,18 @@ describe('Testing rotas "mercadorias"', () => {
 
     // Teste: Buscar mercadoria por nome
     it("should get a product by name", async () => {
-        const res = await request(app).get('/mercadorias/Melao');
+        const res = await request(app).get('/mercadorias/nome/Fone');
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('nome');
     });
 
     // Teste: Buscar mercadoria por grupo
     it("should get a product by group", async () => {
-        const res = await request(app).get('/mercadorias/A');
+        const res = await request(app).get('/mercadorias/grupo/A');
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('grupo');
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThan(0);
+        expect(res.body[0]).toHaveProperty('grupo');
     });
 
     // Teste: Criar uma nova mercadoria
@@ -237,13 +250,13 @@ describe('Testing rotas "mercadorias"', () => {
         expect(res.body).toHaveProperty('mensagem', 'Mercadoria cadastrada com sucesso');
     });
 
-    // Teste: Atualizar uma mercadoria existente
+    // Teste: Atualizar uma mercadoria existente // não esta retornando corretamente
     it("should update a product successfully", async () => {
         const updatedData = {
-            nome: "Melaciazona",
-            grupo: "B"
+            nome: "Abacaxiiiii",
+            grupo: "A"
         };
-        const res = await request(app).put('/mercadorias/1').send(updatedData);
+        const res = await request(app).put('/mercadorias/6').send(updatedData);
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('mensagem', 'Mercadoria atualizada com sucesso');
     });
@@ -278,7 +291,7 @@ describe('Testing rotas "mercadorias"', () => {
             nome: "Produto Inexistente",
             grupo: "Grupo F"
         };
-        const res = await request(app).put('/mercadorias/9999').send(updatedData);
+        const res = await request(app).put('/mercadorias/999').send(updatedData);
         expect(res.status).toBe(404);
         expect(res.body).toHaveProperty('mensagem', 'Mercadoria não encontrada');
     });

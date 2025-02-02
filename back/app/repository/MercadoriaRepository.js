@@ -24,21 +24,19 @@ class MercadoriaRepository{
             const sql = "SELECT * FROM mercadorias WHERE id=?";
             conexao.query(sql, id, (erro, resultado) =>{
                 if(erro) return reject(erro);
-                return resolve(resultado)
+                return resolve(resultado[0])
             })
         })
     }
-
     findbyname(nome){
         return new Promise((resolve, reject)=>{
             const sql = "SELECT * FROM mercadorias WHERE TRIM(LOWER(nome)) = TRIM(LOWER(?))";
             conexao.query(sql, [nome], (erro, resultado) => {
-                if(erro) return reject(erro);
-                return resolve(resultado) 
-              });
-            })
-        }
-
+                if (erro) return reject(erro);
+                return resolve(resultado[0]);
+            });
+        });
+    }
     findByGroup(grupo){
             return new Promise((resolve, reject)=>{
                 const sql = "SELECT * FROM mercadorias WHERE grupo = ?"; // Consulta SQL para filtrar pelo grupo
