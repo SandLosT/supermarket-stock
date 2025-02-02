@@ -23,7 +23,7 @@ class UsuarioRepository{
 
     getByEmail(email) {
         return new Promise((resolve, reject) => {
-            const sql = "SELECT * FROM bd_estoque_market_test.usuarios WHERE email = ?";
+            const sql = "SELECT * FROM usuarios WHERE email = ?";
             conexao.query(sql, [email], (erro, resultado) => {
                 if (erro) return reject(erro);
                 return resolve(resultado[0]);

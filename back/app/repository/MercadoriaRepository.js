@@ -23,7 +23,7 @@ class MercadoriaRepository{
         return new Promise((resolve, reject) => {
             const sql = "SELECT * FROM mercadorias WHERE id=?";
             conexao.query(sql, id, (erro, resultado) =>{
-                if(erro) return console.log("Mercadorias não encontradas!" + reject);
+                if(erro) return reject(erro);
                 return resolve(resultado)
             })
         })
