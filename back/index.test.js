@@ -1,6 +1,7 @@
 
 import request from "supertest";
 import app from "./App.js";
+import { response } from "express";
 let token;
 //find all users
 describe('testing rotas "users"', () => {
@@ -41,17 +42,19 @@ describe('testing rotas "users"', () => {
 
 
 
-    /*
+    
     //login antes de tudo para o end-point de autententicação funcinoar
     beforeAll(async() =>{
         const loginData = {
-            email: "testeteste@gmail.com",
-            senha: "testeteste"
+            email: "testelogin@gmail.com",
+            senha: "testelogin"
         };
-        await request(app).post('/login').send(loginData);
-        const valor = loginData.token;
+        let response = await request(app).post('/login').send(loginData);
+        token =  response.body.token;
+        console.log("ver se tem token  "+token);
     })
-    */
+    
+    
 
     //busca uma lista de users
     it("should get all users", async () =>{
@@ -67,8 +70,7 @@ describe('testing rotas "users"', () => {
     })
     //busca por id 
     it("should get a user by ID", async () => {
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzM4Mjk3NDE2fQ.-ng9Nag4Rb5VoCVNNengDpogwYISb0mbT_QAC-hSF_w';
-        const res = await request(app).get('/usuarios/2').set('Authorization', `Bearer ${token}`);
+        const res = await request(app).get('/usuarios/70').set('Authorization', `Bearer ${token}`);
         expect(res.status).toBe(200); // Espera um status 200 se encontrado
         expect(res.body).toHaveProperty('nome');
         expect(res.body).toHaveProperty('email');
@@ -91,7 +93,6 @@ describe('testing rotas "users"', () => {
         };
         
         const res = await request(app).post('/login').send(loginData);
-    
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('message', 'Autenticação realizada com sucesso!');
         expect(res.body).toHaveProperty('token');

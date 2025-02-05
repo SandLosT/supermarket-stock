@@ -49,7 +49,7 @@ class UsuarioController{
         try {
             const usuario = await UsuarioRepository.getByEmail(email);
             const senhacomparada = await bcrypt.compare(senha, usuario.senha);
-            if (!usuario ) {
+            if (!usuario || usuario.length == 0 ) {
                 res.status(404).json({ mensagem: "Usuário não encontrado" });
             }else if(senhacomparada == true){
             //Apos as comparações o token entra em cena!
