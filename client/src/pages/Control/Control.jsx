@@ -74,7 +74,7 @@ function Control() {
           .then((data) => {
             setProducts(data); // Atualiza o estado com os produtos mais recentes
             clearForm();
-            alert("Produto adicionado com sucesso!");
+          
           })
           .catch((error) => console.error("Erro ao atualizar lista de produtos:", error));
       })
@@ -130,8 +130,8 @@ function Control() {
       .catch((error) => console.error("Erro ao editar produto:", error));
   };
 
-  const handleDeleteProduct = (id) => {
-    fetch(`http://localhost:3000/mercadorias/${id}`, {
+  const handleDeleteProduct = (nome, id) => {
+    fetch(`http://localhost:3000/mercadorias/${nome}`, {
       method: "DELETE",
     })
       .then((response) => {
@@ -146,7 +146,21 @@ function Control() {
         );
         alert("Produto excluído com sucesso!");
       })
-      .catch((error) => console.error("Erro ao excluir produto:", error));
+      .then(() => {
+        // Atualiza a lista de produtos diretamente após o sucesso
+        fetch("http://localhost:3000/mercadorias", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then(() => {
+            mercadorias()// Atualiza o estado com os produtos mais recentes
+            clearForm();
+          
+          })
+          .catch((error) => console.error("Erro ao atualizar lista de produtos:", error));
+      })
   };
 
   const clearForm = () => {
@@ -218,7 +232,7 @@ function Control() {
                 <td>{mercadoria.grupo}</td>
                 <td>
                   <button onClick={() => handleEditProduct(mercadoria.id)}>Editar</button>
-                  <button onClick={() => handleDeleteProduct(mercadoria.id)}>Excluir</button>
+                  <button onClick={() => handleDeleteProduct(mercadoria.nome)}>Excluir</button>
                 </td>
               </tr>
             ))}
