@@ -125,43 +125,61 @@ function Control() {
         );
         clearForm();
         setEditingProduct(null);
-        alert("Produto atualizado com sucesso!");
       })
       .catch((error) => console.error("Erro ao editar produto:", error));
+
+      return fetch("http://localhost:3000/mercadorias", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Erro ao buscar mercadorias");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setProducts(data); // Atualiza o estado com os produtos mais recentes
+        })
+        .catch((error) => console.error("Erro ao buscar produtos:", error));    
   };
 
   const handleDeleteProduct = (nome, id) => {
     fetch(`http://localhost:3000/mercadorias/${nome}`, {
-      method: "DELETE",
+        method: "DELETE",
     })
-      .then((response) => {
+    .then((response) => {
         if (!response.ok) {
-          throw new Error("Erro ao deletar produto");
+            throw new Error("Erro ao deletar produto");
         }
         return response.json();
-      })
-      .then(() => {
+    })
+    .then(() => {
         setProducts((prevProducts) =>
-          prevProducts.filter((mercadoria) => mercadoria.id !== id)
+            prevProducts.filter((mercadoria) => mercadoria.id !== id)
         );
-        alert("Produto excluído com sucesso!");
-      })
-      .then(() => {
+
         // Atualiza a lista de produtos diretamente após o sucesso
-        fetch("http://localhost:3000/mercadorias", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-          .then(() => {
-            mercadorias()// Atualiza o estado com os produtos mais recentes
-            clearForm();
-          
-          })
-          .catch((error) => console.error("Erro ao atualizar lista de produtos:", error));
-      })
-  };
+        return fetch("http://localhost:3000/mercadorias", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Erro ao buscar mercadorias");
+        }
+        return response.json();
+    })
+    .then((data) => {
+        setProducts(data); // Atualiza o estado com os produtos mais recentes
+    })
+    .catch((error) => console.error("Erro ao deletar produto:", error));
+};
 
   const clearForm = () => {
     setName("");
