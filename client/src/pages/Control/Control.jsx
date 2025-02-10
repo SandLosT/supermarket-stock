@@ -178,7 +178,6 @@ function Control() {
     .then((data) => {
         setProducts(data); // Atualiza o estado com os produtos mais recentes
     })
-    .catch((error) => console.error("Erro ao deletar produto:", error));
 };
 
   const clearForm = () => {

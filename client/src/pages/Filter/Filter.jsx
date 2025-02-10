@@ -1,41 +1,63 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Filter.css';
 
-function Filter({ mercadorias }) {
+function Filter() {
+  const [mercadorias, setMercadorias] = useState([]);
   const [nameFilter, setNameFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [filteredMercadorias, setFilteredMercadorias] = useState([]);
 
-  // Função para aplicar o filtro
+  // Fetch the list of mercadorias from the server
+  useEffect(() => {
+    fetch('http://localhost:3000/mercadorias', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Erro ao buscar mercadorias');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setMercadorias(data);
+        setFilteredMercadorias(data); // Initialize the filtered list with all mercadorias
+      })
+      .catch((error) => console.error('Erro ao buscar mercadorias:', error));
+  }, []);
+
+  // Function to apply the filter
   const handleFilter = useCallback(() => {
-    let filtered = Array.isArray(mercadorias) ? [...mercadorias] : []; // Garante que mercadorias é um array
+    let filtered = Array.isArray(mercadorias) ? [...mercadorias] : []; // Ensure mercadorias is an array
 
     if (nameFilter) {
       filtered = filtered.filter((mercadoria) =>
-        mercadoria.name.toLowerCase().includes(nameFilter.toLowerCase())
+        mercadoria.nome.toLowerCase().includes(nameFilter.toLowerCase())
       );
     }
 
     if (typeFilter) {
       filtered = filtered.filter((mercadoria) =>
-        mercadoria.type.toLowerCase() === typeFilter.toLowerCase() // Filtrando pelo tipo
+        mercadoria.grupo.toLowerCase() === typeFilter.toLowerCase() // Filter by type
       );
     }
 
     setFilteredMercadorias(filtered);
-  }, [mercadorias, nameFilter, typeFilter]); // Adicionando dependências de mercadorias, nameFilter e typeFilter
+  }, [mercadorias, nameFilter, typeFilter]); // Add dependencies for mercadorias, nameFilter, and typeFilter
 
-  // Atualiza o filtro sempre que as mercadorias mudarem
+  // Update the filter whenever the mercadorias change
   useEffect(() => {
     if (Array.isArray(mercadorias)) {
       setFilteredMercadorias(mercadorias);
     }
   }, [mercadorias]);
 
-  // Atualiza o filtro de acordo com os campos de busca
+  // Update the filter based on the search fields
   useEffect(() => {
     handleFilter();
-  }, [handleFilter]); // Aqui estamos garantindo que handleFilter seja chamado sempre que for alterado.
+  }, [handleFilter]); // Ensure handleFilter is called whenever it changes
 
   return (
     <div className="filter">
@@ -59,13 +81,13 @@ function Filter({ mercadorias }) {
           onChange={(e) => setTypeFilter(e.target.value)}
         >
           <option value="">Selecione o tipo</option>
-          <option value="A">Legumes</option>
-          <option value="A">Frutos</option>
-          <option value="A">Panificação</option>
-          <option value="B">Bebidas</option>
-          <option value="A">Congelados</option>
-          <option value="H">Higiene Pessoal</option>
-          <option value="L">Produtos de Limpeza</option>
+          <option value="A">A-Legumes</option>
+          <option value="A">A-Frutos</option>
+          <option value="A">A-Panificação</option>
+          <option value="B">B-Bebidas</option>
+          <option value="A">A-Congelados</option>
+          <option value="H">H-Higiene Pessoal</option>
+          <option value="L">L-Produtos de Limpeza</option>
         </select>
       </div>
 
@@ -89,10 +111,10 @@ function Filter({ mercadorias }) {
             filteredMercadorias.map((mercadoria) => (
               <tr key={mercadoria.id}>
                 <td>{mercadoria.id}</td>
-                <td>{mercadoria.name}</td>
-                <td>{mercadoria.price}</td>
-                <td>{mercadoria.quantity}</td>
-                <td>{mercadoria.type}</td>
+                <td>{mercadoria.nome}</td>
+                <td>{mercadoria.valor}</td>
+                <td>{mercadoria.quantidade}</td>
+                <td>{mercadoria.grupo}</td>
               </tr>
             ))
           ) : (

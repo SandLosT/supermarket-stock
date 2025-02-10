@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./User.css";
 
 function User() {
@@ -6,16 +6,57 @@ function User() {
   const [newUser, setNewUser] = useState({ email: "", senha: "" });
   const [editingUser, setEditingUser] = useState(null); // Estado para controle do usuário que está sendo editado
 
+useEffect(() => {
+    fetch("http://localhost:3000/usuarios", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Usuarios não encontrados");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Dados recebidos:", data);
+        setUsers(data); // Define o estado com os produtos recebidos
+      })
+      .catch((error) => console.error("Erro ao buscar usuários:", error));
+  }, []);
+
+ 
   const handleDelete = (id) => {
     const updatedUsers = users.filter((user) => user.id !== id);
     setUsers(updatedUsers);
     alert("Usuário excluído com sucesso!");
+    loadUsers();
   };
 
   const handleEdit = (id) => {
     const userToEdit = users.find((user) => user.id === id);
     setEditingUser(userToEdit); // Define o usuário que está sendo editado
   };
+
+  const loadUsers = () => {
+    fetch("http://localhost:3000/usuarios", {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+      },
+  })
+  .then((response) => {
+    if (!response.ok) {
+        throw new Error("Usuários não encontrados");
+    }
+    return response.json();
+  })
+  .then((data) => {
+    setUsers(data); // Atualiza o estado com os produtos mais recentes
+    })
+    .catch((error) => console.error("Erro ao buscar Usuários:", error));
+};
 
   const handleSaveEdit = () => {
     const updatedUsers = users.map((user) =>
@@ -24,6 +65,7 @@ function User() {
     setUsers(updatedUsers);
     setEditingUser(null); // Limpa a edição após salvar
     alert("Usuário atualizado com sucesso!");
+    loadUsers();
   };
 
   const handleAddUser = () => {
@@ -34,6 +76,7 @@ function User() {
     };
     setUsers([...users, newUserObj]);
     setNewUser({ email: "", senha: "" }); // Limpa os campos após adicionar
+    loadUsers();
   };
 
   return (
