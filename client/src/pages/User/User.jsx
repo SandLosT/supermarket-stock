@@ -3,7 +3,7 @@ import "./User.css";
 
 function User() {
   const [users, setUsers] = useState([]);
-  const [newUser, setNewUser] = useState({ email: "", senha: "" });
+  const [newUser, setNewUser] = useState({ nome:"", email: "", senha: "" });
   const [editingUser, setEditingUser] = useState(null); // Estado para controle do usuário que está sendo editado
 
 useEffect(() => {
@@ -68,16 +68,23 @@ useEffect(() => {
     loadUsers();
   };
 
+
   const handleAddUser = () => {
-    const newUserObj = {
-      id: users.length + 1,
-      email: newUser.email,
-      senha: newUser.senha,
-    };
-    setUsers([...users, newUserObj]);
-    setNewUser({ email: "", senha: "" }); // Limpa os campos após adicionar
+    fetch("http://localhost:3000/usuarios", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+  })
+    
+    setUsers([...users, newUser]); // Adiciona o novo usuário ao estado
+    setNewUser({nome: "", email: "", senha: "" }); // Limpa os campos após adicionar
     loadUsers();
   };
+
+
+
 
   return (
     <div className="user-container">
@@ -166,6 +173,13 @@ useEffect(() => {
 
       {/* Formulário para adicionar usuário */}
       <div className="add-user-form">
+        <input
+          type="name"
+          className="input-field"
+          placeholder="Nome"
+          value={newUser.nomeome}
+          onChange={(e) => setNewUser({ ...newUser, nome: e.target.value })}
+        />    
         <input
           type="email"
           className="input-field"
