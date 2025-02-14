@@ -15,6 +15,7 @@ h2 {
   margin-left: auto;
   margin-right: auto;
   background-color: #fff;
+
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -28,7 +29,7 @@ h2 {
 
 .user-table th,
 .user-table td {
-  padding: 10px;
+  padding: 13px;
   text-align: left;
   border: 1px solid #ddd;
 }
@@ -39,7 +40,7 @@ h2 {
 
 .actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 10px;
 }
 
@@ -52,7 +53,7 @@ h2 {
 
 .edit-buttons {
   display: flex;
-  gap: 10px;
+  gap: 15px;
 }
 
 .edit-button {

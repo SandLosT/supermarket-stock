@@ -3,7 +3,7 @@ import conexao from "../database/conexao.js";
 class UsuarioRepository{
     getAll() {
         return new Promise((resolve, reject) => {
-            const sql = "SELECT nome, email FROM usuarios;";
+            const sql = "SELECT id, nome, email FROM usuarios;";
             conexao.query(sql, (erro, resultado) => {
                 if (erro) return reject(erro);
                 resolve(resultado);
