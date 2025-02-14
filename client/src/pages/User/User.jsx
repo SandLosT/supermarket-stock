@@ -19,15 +19,23 @@ useEffect(() => {
         }
         return response.json();
       })
+
+      
       .then((data) => {
         console.log("Dados recebidos:", data);
         setUsers(data); // Define o estado com os produtos recebidos
       })
       .catch((error) => console.error("Erro ao buscar usuários:", error));
-  }, []);
+  }, users);
 
  
   const handleDelete = (id) => {
+    fetch(`http://localhost:3000/usuarios/${id}`, {
+      method: "DELETE",
+      headers: {
+          "Content-Type": "application/json",
+      },
+    })
     const updatedUsers = users.filter((user) => user.id !== id);
     setUsers(updatedUsers);
     alert("Usuário excluído com sucesso!");
@@ -82,10 +90,6 @@ useEffect(() => {
     setNewUser({nome: "", email: "", senha: "" }); // Limpa os campos após adicionar
     loadUsers();
   };
-
-
-
-
   return (
     <div className="user-container">
       <h2>Lista de Usuários</h2>
@@ -177,7 +181,7 @@ useEffect(() => {
           type="name"
           className="input-field"
           placeholder="Nome"
-          value={newUser.nomeome}
+          value={newUser.nome}
           onChange={(e) => setNewUser({ ...newUser, nome: e.target.value })}
         />    
         <input
