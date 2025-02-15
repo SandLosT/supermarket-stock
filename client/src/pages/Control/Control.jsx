@@ -146,8 +146,8 @@ function Control() {
         .catch((error) => console.error("Erro ao buscar produtos:", error));    
   };
 
-  const handleDeleteProduct = (nome, id) => {
-    fetch(`http://localhost:3000/mercadorias/${nome}`, {
+  const handleDeleteProduct = (id) => {
+    fetch(`http://localhost:3000/mercadorias/${id}`, {
         method: "DELETE",
     })
     .then((response) => {
@@ -249,7 +249,7 @@ function Control() {
                 <td>{mercadoria.grupo}</td>
                 <td>
                   <button onClick={() => handleEditProduct(mercadoria.id)}>Editar</button>
-                  <button onClick={() => handleDeleteProduct(mercadoria.nome)}>Excluir</button>
+                  <button onClick={() => handleDeleteProduct(mercadoria.id)}>Excluir</button>
                 </td>
               </tr>
             ))}

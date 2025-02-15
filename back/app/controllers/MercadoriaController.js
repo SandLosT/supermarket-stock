@@ -67,7 +67,6 @@ class MercadoriaController {
             if (!dados.nome || !dados.grupo || !dados.quantidade || !dados.valor) {
                 return res.status(400).json({ mensagem: 'Todos os campos são obrigatórios' });
             }
-
             const resultado = await MercadoriaRepository.create(dados);
             console.log(resultado.id);
             res.status(201).json({
@@ -99,13 +98,11 @@ class MercadoriaController {
 
     async delete(req, res) {
         try {
-            const nome = req.params.nome;
-            const resultado = await MercadoriaRepository.delete(nome);
-
-            if (!resultado) {
+            const id = req.params.id;
+            const resultado = await MercadoriaRepository.delete(id);
+            if (!resultado || resultado.affectedRows === 0) {
                 return res.status(404).json({ mensagem: 'Mercadoria não encontrada' });
             }
-
             res.status(200).json({ mensagem: 'Mercadoria excluída com sucesso' });
         } catch (erro) {
             console.error(erro);
