@@ -1,25 +1,35 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../Auten/AuthContext'; // Importando o hook do contexto de autenticação
 
 function Login() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth(); // Acessa a função de login do contexto de autenticação
 
   const handleLogin = async () => {
     setError('');
     setLoading(true);
-
-    try {
-        await login(email, password); // Chama a função de login do contexto
-        navigate('/controle'); // Redireciona para a página de controle após login bem-sucedido
+    console.log(email, senha); 
+    try { 
+        const response = await fetch("http://localhost:3000/login", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, senha }),
+        });
+        const data = await response.json();
+        if (data.token != null || data.token != undefined) {
+            localStorage.setItem('token', data.token);
+            navigate('/controle'); // Redireciona para a página de controle após login bem-sucedido
+        } else {
+            setError('Credenciais inválidas. Tente novamente.');
+        }
     } catch (err) {
-        setError('Credenciais inválidas. Tente novamente.');
+        setError('Erro ao tentar fazer login. Tente novamente.');
     } finally {
         setLoading(false);
     }
@@ -45,8 +55,8 @@ function Login() {
             <label>Senha:</label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
               placeholder="Digite sua senha"
             />
           </div>
