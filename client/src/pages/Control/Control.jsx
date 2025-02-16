@@ -247,7 +247,7 @@ function Control() {
                 <td>R${mercadoria.valor}</td>
                 <td>{mercadoria.quantidade}</td>
                 <td>{mercadoria.grupo}</td>
-                <td>
+                <td className="edit-buttons">
                   <button onClick={() => handleEditProduct(mercadoria.id)}>Editar</button>
                   <button onClick={() => handleDeleteProduct(mercadoria.id)}>Excluir</button>
                 </td>

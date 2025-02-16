@@ -4,7 +4,6 @@ import './Footer.css'; // Importando o arquivo de estilo
 function Footer() {
   return (
     <footer>
-      <p>App criado por JAY</p>
     </footer>
   );
 }
