@@ -1,25 +1,25 @@
-# API Node.js
+# Stock Control System
 
-Este projeto é uma API desenvolvida com Node.js e Express, que se conecta a um banco de dados MySQL. O projeto também inclui um cliente em React que consome a API.
+This project is an API developed with Node.js and Express, which connects to a MySQL database. The project also includes a React client that consumes the API.
 
-## 🚀 Tecnologias Utilizadas
+## 🚀 Technologies Used
 
-- **Node.js**: Ambiente de execução JavaScript.
-- **Express**: Framework para criação de APIs.
-- **MySQL2**: Cliente para conexão com MySQL.
-- **JWT**: Autenticação via JSON Web Tokens.
-- **Dotenv**: Gerenciamento de variáveis de ambiente.
+- **Node.js**: JavaScript runtime environment.
+- **Express**: Framework for creating APIs.
+- **MySQL2**: Client for connecting to MySQL.
+- **JWT**: Authentication via JSON Web Tokens.
+- **Dotenv**: Environment variable management.
 
-## 📂 Configuração do Banco de Dados
+## 📂 Database Configuration
 
-O projeto utiliza diferentes configurações de banco de dados para ambientes de produção e teste. As credenciais são gerenciadas por arquivos `.env`.
+The project uses different database configurations for production and testing environments. Credentials are managed by `.env` files.
 
-### 📌 Configuração do `.env`
+### 📌 `.env` Configuration
 
-Crie um arquivo `.env.prod` para produção e um `.env.test` para testes dentro da pasta `app/database/`. Preencha os valores corretamente:
+Create a `.env.prod` file for production and a `.env.test` file for testing inside the `app/database/` folder. Fill in the values correctly:
 
 ```ini
-# Exemplo de arquivo .env.prod
+# Example of .env.prod file
 
 DB_USER=
 DB_PASS=
@@ -30,12 +30,12 @@ DB_NAME=
 # JWT Secret
 JWT_TOKEN=
 
-# Porta do servidor
+# Server port
 SERVER_PORT=3000
 ```
 
 ```ini
-# Exemplo de arquivo .env.test
+# Example of .env.test file
 
 DB_USER=usertest
 DB_PASS=
@@ -47,9 +47,9 @@ DB_NAME=bd_estoque_market_test
 JWT_TOKEN=
 ```
 
-## 🔧 Configuração da Conexão com o Banco de Dados
+## 🔧 Database Connection Configuration
 
-O arquivo de conexão com o banco (`database.js`) seleciona automaticamente o ambiente correto:
+The database connection file (`database.js`) automatically selects the correct environment:
 
 ```javascript
 import mysql from 'mysql2';
@@ -74,9 +74,9 @@ conexao.connect();
 export default conexao;
 ```
 
-## ▶️ Scripts Disponíveis
+## ▶️ Available Scripts
 
-No `package.json`, os seguintes scripts estão disponíveis:
+In the `package.json`, the following scripts are available:
 
 ```json
 "scripts": {
@@ -85,9 +85,9 @@ No `package.json`, os seguintes scripts estão disponíveis:
 }
 ```
 
-- `npm run dev`: Inicia a API em ambiente de produção com `nodemon`.
-- `npm run test`: Executa os testes com `Jest`.
+- `npm run dev`: Starts the API in production environment with `nodemon`.
+- `npm run test`: Runs the tests with `Jest`.
 
-## 📜 Licença
+## 📜 License
 
-Este projeto está licenciado sob a licença ISC.
+This project is licensed under the ISC license.
