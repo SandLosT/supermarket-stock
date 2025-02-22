@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
 
   // Função para login
   const login = () => {
-    setIsAuthenticated(true);
-    localStorage.setItem('isAuthenticated', 'true');
+    
+   
   };
 
   // Função para logout
