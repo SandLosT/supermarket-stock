@@ -5,9 +5,24 @@ import './Header.css';
 function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const authent = localStorage.getItem("token");
+
+  // Se o token não existir, o Header não deve ser renderizado
+  if (!authent) {
+    return null;  // Não renderiza o Header se não houver token
+  }
+
+  const handleauthent = () => {
+    if (!authent) {
+      alert("Esta é uma rota privada e você não está autenticado!");
+    } else {
+      navigate('/user'); // Redireciona para a página de usuário
+    }
+  };
 
   const handleLogout = () => {
     // Realiza qualquer limpeza necessária (ex: limpar sessão ou token)
+    localStorage.removeItem("token"); // Remove o token do localStorage
     navigate('/'); // Redireciona para a página de login
   };
 
@@ -31,7 +46,7 @@ function Header() {
           </span>
           {showDropdown && (
             <div className="dropdown-menu">
-              <Link to="/user" className="dropdown-item">Alterar Conta / Criar Conta</Link>
+              <button onClick={handleauthent} className="dropdown-item">Alterar Conta / Criar Conta</button>
               <button className="dropdown-item logout" onClick={handleLogout}>Sair</button>
             </div>
           )}

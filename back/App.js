@@ -1,5 +1,5 @@
 //abaixo importamos o express.
-import express, { json } from 'express';
+import express from 'express';
 import mercadoriaController from './app/controllers/mercadoriaController.js';
 import UsuarioController from './app/controllers/UsuarioController.js';
 
@@ -16,16 +16,16 @@ app.use(express.json());
      app.get("/mercadorias/:id", mercadoriaController.show)
 
      //End point de busca por nome
-     app.get("/mercadorias/nome/:nome", mercadoriaController.showforname)
+     app.get("/mercadorias/nomes/:nome", mercadoriaController.showforname)
 
      //End point de busca por grupo
-     app.get("/mercadorias/grupo/:grupo",mercadoriaController.showforgroup)
+     app.get("/mercadorias/grupos/:grupo",mercadoriaController.showforgroup)
 
      //End point de cadastro
      app.post("/mercadorias", mercadoriaController.store)
 
-     //End point de exclusão e configurado para excluir por nome.
-     app.delete("/mercadorias/:nome",mercadoriaController.delete)
+     //End point de exclusão e configurado para excluir por id.
+     app.delete("/mercadorias/:id", mercadoriaController.delete)
 
      //end point de update
      app.put("/mercadorias/:id", mercadoriaController.update)
