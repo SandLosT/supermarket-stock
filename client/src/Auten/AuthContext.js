@@ -1,22 +1,25 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
-// Criar o contexto de autenticação
 const AuthContext = createContext();
 
-// Provedor do contexto para envolver o App e suas páginas
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Função para login
+  useEffect(() => {
+    // Verifica o localStorage ao iniciar a aplicação
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token); // Converte para booleano
+  }, []);
+
+  // Função de login atualiza estado e salva no localStorage
   const login = () => {
-    
-   
+    setIsAuthenticated(true);
   };
 
-  // Função para logout
+  // Função de logout
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('token');
   };
 
   return (
@@ -26,5 +29,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Custom Hook para acessar o contexto em qualquer lugar do aplicativo
 export const useAuth = () => useContext(AuthContext);

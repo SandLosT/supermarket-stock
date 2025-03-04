@@ -9,6 +9,7 @@ import User from "./pages/User/User";
 import { AuthProvider, useAuth } from "./Auten/AuthContext";
 import PrivateRoute from "./Auten/PrivateRoute";
 
+
 function App() {
   return (
     <AuthProvider>
@@ -35,9 +36,9 @@ function AppContent() {
           element={<PrivateRoute element={<Filtro />} />} // Passando o componente como 'element'
         />
         <Route
-  path="/controle"
-  element={<PrivateRoute element={<Control />} />} // Passando o componente como 'element'
-/>
+          path="/controle"
+          element={<PrivateRoute element={<Control />} />} // Passando o componente como 'element'
+        />
 
         <Route
           path="/user"

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Auten/AuthContext'; // Importa o contexto de autenticação
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -8,11 +9,14 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth(); // Obtém a função login do contexto
+
 
   const handleLogin = async () => {
     setError('');
     setLoading(true);
-    console.log(email, senha); 
+    console.log(email, senha);
+
     try { 
         const response = await fetch("http://localhost:3000/login", {
             method: 'POST',
@@ -21,10 +25,12 @@ function Login() {
             },
             body: JSON.stringify({ email, senha }),
         });
+
         const data = await response.json();
-        if (data.token != null || data.token != undefined) {
+        if (data.token) {
             localStorage.setItem('token', data.token);
-            navigate('/controle'); // Redireciona para a página de controle após login bem-sucedido
+            login(); // 🔥 Chama login() para atualizar o contexto
+            navigate('/controle'); // Redireciona para a página de controle
         } else {
             setError('Credenciais inválidas. Tente novamente.');
         }

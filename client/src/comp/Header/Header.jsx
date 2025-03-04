@@ -6,16 +6,23 @@ function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
   const authent = localStorage.getItem("token");
-  const handleauthent = () => {
+
+  // Se o token não existir, o Header não deve ser renderizado
   if (!authent) {
-    alert("Esta é uma rota privada e você não está autenticado!");
+    return null;  // Não renderiza o Header se não houver token
   }
-  else {
-    navigate('/user'); // Redireciona para a página de usuário
-  }
-}
+
+  const handleauthent = () => {
+    if (!authent) {
+      alert("Esta é uma rota privada e você não está autenticado!");
+    } else {
+      navigate('/user'); // Redireciona para a página de usuário
+    }
+  };
+
   const handleLogout = () => {
     // Realiza qualquer limpeza necessária (ex: limpar sessão ou token)
+    localStorage.removeItem("token"); // Remove o token do localStorage
     navigate('/'); // Redireciona para a página de login
   };
 
