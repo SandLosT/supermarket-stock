@@ -7,16 +7,40 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
 
-  // Função para login
-  const login = () => {
-    setIsAuthenticated(true);
-    localStorage.setItem('isAuthenticated', 'true');
+  // Função para login: faz POST para o backend e armazena o token
+  const login = async (email, senha) => {
+    const url = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+    const resp = await fetch(`${url}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.mensagem || 'Erro ao autenticar');
+    }
+
+    const data = await resp.json();
+    if (data.token) {
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('isAuthenticated', 'true');
+      setIsAuthenticated(true);
+    } else {
+      throw new Error(data.mensagem || 'Resposta de autenticação inválida');
+    }
   };
 
   // Função para logout
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem('isAuthenticated');
+    // Atualiza o localStorage para refletir o logout e remove o token
+    try {
+      localStorage.setItem('isAuthenticated', 'false');
+      localStorage.removeItem('authToken');
+    } catch (e) {
+      // se localStorage falhar por algum motivo, apenas ignore
+    }
   };
 
   return (

@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Auten/AuthContext';
 import './Header.css';
 
 function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    // Realiza qualquer limpeza necessária (ex: limpar sessão ou token)
+    // Atualiza o estado de autenticação e limpa o token
+    try {
+      logout();
+    } catch (e) {
+      // fallback: garantir limpeza do token
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('isAuthenticated');
+    }
+    setShowDropdown(false);
     navigate('/'); // Redireciona para a página de login
   };
 
