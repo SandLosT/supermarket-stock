@@ -46,11 +46,13 @@ class UsuarioController{
 
     async showLogin(req, res) {
         const { email, senha } = req.body;
+        console.log("dados enviados para login: "+ email + " " + senha);
         try {
             const usuario = await UsuarioRepository.getByEmail(email);
             const senhacomparada = await bcrypt.compare(senha, usuario.senha);
             if (!usuario || usuario.length == 0 ) {
                 res.status(404).json({ mensagem: "Usuário não encontrado" });
+                console.log(error);
             }else if(senhacomparada == true){
             //Apos as comparações o token entra em cena!
             const secret = process.env.JWT_TOKEN

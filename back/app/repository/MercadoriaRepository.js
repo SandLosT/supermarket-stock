@@ -57,10 +57,10 @@ class MercadoriaRepository{
             });
         }
 
-    delete(nome) {
+    delete(id) {
     return new Promise((resolve, reject) => {
-        const sql = "DELETE FROM mercadorias WHERE nome=?";
-        conexao.query(sql, nome, (erro, resultado) => {
+        const sql = "DELETE FROM mercadorias WHERE id=?";
+        conexao.query(sql, [id], (erro, resultado) => {
             if (erro) return reject(erro);
             return resolve(resultado);
                 });

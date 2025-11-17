@@ -29,13 +29,13 @@ function Header() {
     <header className="header">
       <div className="header-left">
         <Link to="/filtro" className="header-link">Filtro</Link>
-        <Link to="/controle" className="header-link">Controle</Link> {/* Corrigido para "/controle" */}
+        <Link to="/controle" className="header-link">Controle</Link>
       </div>
       <div className="header-right">
         <div className="user-dropdown">
           <span
             className="username"
-            onClick={handleToggleDropdown} // Mostra ou esconde o menu ao clicar
+            onClick={handleToggleDropdown}
           >
             Usuário
           </span>

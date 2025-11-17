@@ -50,6 +50,7 @@ button:hover {
 .product-list {
   width: 80%;
   margin: 0 auto;
+  
 }
 
 table {
@@ -67,4 +68,10 @@ th, td {
 th {
   background-color: #f4f4f4;
   font-weight: bold;
+}
+.edit-buttons {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 15px;
 }

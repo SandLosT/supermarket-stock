@@ -40,7 +40,7 @@ describe('testing rotas "users"', () => {
     })
         
 
-
+    //testes revisados
 
     
     //login antes de tudo para o end-point de autententicação funcinoar
@@ -223,14 +223,14 @@ describe('Testing rotas "mercadorias"', () => {
 
     // Teste: Buscar mercadoria por nome
     it("should get a product by name", async () => {
-        const res = await request(app).get('/mercadorias/nome/Fone');
+        const res = await request(app).get('/mercadorias/nomes/Fone');
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('nome');
     });
 
     // Teste: Buscar mercadoria por grupo
     it("should get a product by group", async () => {
-        const res = await request(app).get('/mercadorias/grupo/A');
+        const res = await request(app).get('/mercadorias/grupos/A');
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
         expect(res.body.length).toBeGreaterThan(0);
@@ -241,6 +241,7 @@ describe('Testing rotas "mercadorias"', () => {
 
     it("should create a new product", async () => {
         const newProduct = {
+            id: 140,
             nome: "Produto Teste",
             grupo: "A",
             quantidade: 134,
@@ -264,7 +265,7 @@ describe('Testing rotas "mercadorias"', () => {
 
     // Teste: Deletar uma mercadoria
     it("should delete a product successfully", async () => {
-        const res = await request(app).delete('/mercadorias/Produto Teste');
+        const res = await request(app).delete('/mercadorias/140');
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('mensagem', 'Mercadoria excluída com sucesso');
     });
