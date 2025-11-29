@@ -15,29 +15,13 @@ function Login() {
   const handleLogin = async () => {
     setError('');
     setLoading(true);
-    console.log(email, senha);
-
-    try { 
-        const response = await fetch("http://localhost:3000/login", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, senha }),
-        });
-
-        const data = await response.json();
-        if (data.token) {
-            localStorage.setItem('token', data.token);
-            login(); // 🔥 Chama login() para atualizar o contexto
-            navigate('/controle'); // Redireciona para a página de controle
-        } else {
-            setError('Credenciais inválidas. Tente novamente.');
-        }
+    try {
+      await login(email, senha);
+      navigate('/controle');
     } catch (err) {
-        setError('Erro ao tentar fazer login. Tente novamente.');
+      setError(err.message || 'Credenciais inválidas. Tente novamente.');
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
