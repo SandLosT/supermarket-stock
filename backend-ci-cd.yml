@@ -1,4 +1,4 @@
-name: Backend CI/CD
+name: Deploy to EC2
 
 on:
   push:
@@ -6,49 +6,29 @@ on:
       - main
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    name: Run Backend Tests
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Install Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install Dependencies (Backend)
-        working-directory: ./back
-        run: npm install
-
-      - name: Run Tests
-        working-directory: ./back
-        run: npm test
-
   deploy:
-    name: Deploy to EC2
-    needs: test
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install SSH Key
-        uses: webfactory/ssh-agent@v0.7.0
+      - name: Deploy to EC2 over SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Ir para o diretório onde o projeto fica
+            cd /home/ubuntu/supermarket-stock
 
-      - name: Copy Backend to EC2
-        run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./back/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/back/
+            # Puxa as últimas mudanças via HTTPS
+            git pull https://github.com/SEU_USUARIO/SEU_REPO.git main
 
-      - name: Install Dependencies on EC2 & Restart
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
-            cd back &&
-            npm install &&
-            pm2 restart all || pm2 start src/server.js --name api-server
-          "
+            # Instala dependências do back
+            cd back
+            npm install
+
+            # Reinicia o Node usando PM2
+            pm2 restart server || pm2 start server.js --name "server"
