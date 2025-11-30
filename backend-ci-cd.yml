@@ -4,51 +4,45 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
-    name: Run Backend Tests
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Install Node
+      - name: Instalar Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: "18"
 
-      - name: Install Dependencies (Backend)
-        working-directory: ./back
-        run: npm install
+      - name: Instalar dependências
+        run: npm install --prefix back
 
-      - name: Run Tests
-        working-directory: ./back
-        run: npm test
+      - name: Rodar testes
+        run: npm test --prefix back
 
-  deploy:
-    name: Deploy to EC2
-    needs: test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Install SSH Key
-        uses: webfactory/ssh-agent@v0.7.0
+      - name: Copiar arquivos para a EC2
+        uses: appleboy/scp-action@v0.1.4
         with:
-          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "back/*"
+          target: "/home/ubuntu/supermarket-stock/back"
 
-      - name: Copy Backend to EC2
-        run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./back/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/back/
-
-      - name: Install Dependencies on EC2 & Restart
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
-            cd back &&
-            npm install &&
-            pm2 restart all || pm2 start src/server.js --name api-server
-          "
+      - name: Reiniciar PM2 na EC2
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/supermarket-stock/back
+            npm install
+            pm2 stop all || true
+            pm2 start server.js --name "supermarket-api"
+            pm2 save
