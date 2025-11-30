@@ -1,19 +1,16 @@
-import express from 'express';  // Certifique-se de que express está importado corretamente
-import cors from 'cors';        // Importando o CORS
-import app from './App.js';     // Importando as rotas do arquivo App.js
+import express from 'express';
+import cors from 'cors';
+import app from './App.js';
 
-
-// Criando a instância do servidor
 const server = express();
 
-// Habilitar o CORS para todas as origens (pode ser ajustado conforme necessário)
-server.use(cors());  // Certifique-se de que o CORS está sendo aplicado antes das rotas
+server.use(cors());
+server.use(app);
 
-// Usando o roteador com as rotas do arquivo App.js
-server.use(app);  // Usa as rotas definidas no App.js
+// Porta pega das variáveis de ambiente
+const PORT = process.env.SERVER_PORT || 3000;
 
-// Definir a porta que o servidor vai rodar
-const PORT = process.env.SERVER_PORT;
-server.listen(PORT, () => {
-    console.log(`Servidor rodando no endereço http://localhost:${PORT}`);
+// Permite acesso externo (ESSENCIAL NA EC2)
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
