@@ -1,0 +1,119 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: back
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: bd_estoque_market_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: back/package-lock.json
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Install mysql client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+      - name: Prepare test env (CI only)
+        run: |
+          cat > app/database/.env.test <<'ENV'
+          DB_USER=root
+          DB_PASS=root
+          DB_PORT=3306
+          DB_HOST=127.0.0.1
+          DB_NAME=bd_estoque_market_test
+          JWT_TOKEN=ci-test-secret
+          ENV
+
+      - name: Create schema + seed (CI)
+        run: |
+          mysql -h 127.0.0.1 -uroot -proot bd_estoque_market_test < app/database/schema_test.sql
+
+      - name: Run tests
+        env:
+          NODE_ENV: test
+        run: npm test
+
+  deploy:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2 via SSH (git pull + pm2 restart)
+        env:
+          AWS_HOST: ${{ secrets.AWS_HOST }}
+          AWS_USER: ${{ secrets.AWS_USER }}
+          AWS_KEY: ${{ secrets.AWS_KEY }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -e
+          mkdir -p ~/.ssh
+          echo "$AWS_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$AWS_HOST" >> ~/.ssh/known_hosts
+
+          # Remote deploy script
+          ssh -i ~/.ssh/id_rsa "$AWS_USER@$AWS_HOST" "REPO=$REPO bash -s" <<'REMOTE'
+          set -e
+
+          APP_DIR=~/supermarket-stock
+          if [ ! -d "$APP_DIR/.git" ]; then
+            echo "Clonando repo pela primeira vez..."
+            git clone https://github.com/${REPO}.git "$APP_DIR"
+          fi
+
+          cd "$APP_DIR"
+          git fetch --all
+          git checkout main
+          git pull --ff-only
+
+          cd back
+          npm ci
+
+          # Ensure production env file exists on the server (you should create it once)
+          if [ ! -f app/database/.env.prod ]; then
+            echo "⚠️ app/database/.env.prod não encontrado no servidor. Crie esse arquivo (veja .env.prod.example)."
+          fi
+
+          # Start or restart pm2 process
+          if pm2 describe api >/dev/null 2>&1; then
+            npm run restart
+          else
+            npm run start
+          fi
+
+          # Healthcheck
+          sleep 2
+          curl -fsS http://127.0.0.1:3000/health >/dev/null
+          echo "✅ Deploy OK + healthcheck ok"
+REMOTE

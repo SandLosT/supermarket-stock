@@ -6,6 +6,9 @@ import UsuarioController from './app/controllers/UsuarioController.js';
 //abaixo alocamos o express em app.
 const app = express();
 app.use(express.json());
+// Healthcheck (CI/CD)
+app.get("/health", (req, res) => res.status(200).json({ status: "ok" }));
+
      //ROTAS
      // CRUD DE MERCADORIAS
 

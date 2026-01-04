@@ -8,7 +8,7 @@
   "start": "cross-env NODE_ENV=production pm2 start server.js --name api",
   "restart": "pm2 restart api",
   "stop": "pm2 stop api",
-  "test": "cross-env Node_ENV=test jest"
+  "test": "cross-env NODE_ENV=test jest"
 }
 ,
   "keywords": [],
